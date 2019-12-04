@@ -11,6 +11,11 @@ type Config struct {
 	MaxIdleConn		int			`yaml:"max_idle_conn"`
 }
 
+const (
+	SessionName    = "goldenfly"
+	SessionUserKey = "g.id"
+)
+
 var config *Config
 
 func Load(path string) error {

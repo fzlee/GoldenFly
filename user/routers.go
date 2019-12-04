@@ -6,4 +6,8 @@ import (
 
 func RegisterRouter(router *gin.RouterGroup) {
 	router.GET("/users/me/", UsersMe)
+
+	adminGroup := router.Group("/")
+	adminGroup.Use(AdminRequired)
+	adminGroup.GET("/users/", UsersList)
 }

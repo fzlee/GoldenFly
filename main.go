@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/jinzhu/gorm"
 	"golden_fly/common"
 	"golden_fly/config"
@@ -31,11 +33,17 @@ func initRouters (engine *gin.Engine){
 	user.RegisterRouter(router)
 }
 
+func initSession (engine *gin.Engine) {
+	store := cookie.NewStore([]byte(config.SessionName))
+	engine.Use(sessions.Sessions(config.SessionUserKey, store))
+}
+
 func main() {
 	initConfig()
 	db := initDatabase()
 	defer db.Close()
 	engine := gin.Default()
+	initSession(engine)
 	initRouters(engine)
 	engine.Run(config.Get().Addr)
 }

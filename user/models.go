@@ -35,8 +35,14 @@ func (u *User) TableName() string {
 	return "user"
 }
 
-func FindOneUser(condition interface{}) (User, error) {
+func GetUser(condition interface{}) (User, error) {
 	var user User
 	err := common.DB.Where(condition).First(&user).Error
 	return user, err
+}
+
+func GetUsers(condition interface{}) ([]User, error) {
+	var users []User
+	error := common.DB.Where(condition).Find(&users).Error
+	return users, error
 }
