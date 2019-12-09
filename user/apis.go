@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"golden_fly/common"
 	"net/http"
 )
 
@@ -22,6 +23,25 @@ func UsersMe(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": serializer.Response(), "success": true})
 }
 
-func UsersLogin(c *gin.Context) {
 
+func Login(c *gin.Context) {
+
+	loginValidator := LoginValidator{}
+	if err := loginValidator.Bind(c); err != nil {
+		common.ResponseWithCode(c, common.ParameterMissing)
+		return
+	}
+	user, err := GetUser(&User{Username: loginValidator.Username})
+
+	if err != nil {
+		common.ResponseWithCode(c, common.LoginFailed)
+		return
+	}
+
+	if !user.CheckPassword(loginValidator.Password) {
+		common.ResponseWithCode(c, common.LoginFailed)
+		return
+	}
+	serializer := UserSerializer{c, user}
+	c.JSON(http.StatusOK, gin.H{"data": serializer.LoginResponse(), "success": true})
 }

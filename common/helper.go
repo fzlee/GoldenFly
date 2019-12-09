@@ -24,5 +24,3 @@ func ParsePageAndSize(c *gin.Context) Pagination {
 
 	return Pagination{intPage, intSize}
 }
-
-

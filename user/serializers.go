@@ -12,12 +12,12 @@ type UserSerializer struct {
 
 type UserResponse struct {
 	ID        uint      `json:"-"`
-	UID       string    `gorm:"column:uid" json:"uid"`
-	Username  string    `gorm:"column:username" json:"username"`
-	Nickname  string    `gorm:"column:nickname" json:"nickname"`
-	Role      string    `gorm:"column:role" json:"role"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
+	UID       string    `json:"uid,omitempty"`
+	Username  string    `json:"username,omitempty"`
+	Nickname  string    `json:"nickname,omitempty"`
+	Role      string    `json:"role,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 func (self *UserSerializer) Response () *UserResponse {
@@ -28,5 +28,13 @@ func (self *UserSerializer) Response () *UserResponse {
 		Role: self.Role,
 		CreatedAt: self.CreatedAt,
 		UpdatedAt: self.UpdatedAt,
+	}
+}
+
+func (self *UserSerializer) LoginResponse() *UserResponse {
+	return &UserResponse{
+		UID:       self.UID,
+		Nickname:  self.Nickname,
+		Role:      self.Role,
 	}
 }

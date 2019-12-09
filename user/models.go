@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/alexandrevicenzi/unchained"
 	"github.com/guregu/null"
-
 	"golden_fly/common"
 )
 
@@ -45,4 +45,23 @@ func GetUsers(condition interface{}) ([]User, error) {
 	var users []User
 	error := common.DB.Where(condition).Find(&users).Error
 	return users, error
+}
+
+func (self *User) CheckPassword(password string) bool {
+	valid, _ := unchained.CheckPassword(password, self.Password)
+
+	if valid {
+		return true
+	}
+	return false
+}
+
+func (self *User) HashPassword(password string) string {
+	hash, err := unchained.MakePassword(password, unchained.GetRandomString(12), "default")
+
+	if err == nil {
+		return hash
+	} else {
+		return ""
+	}
 }

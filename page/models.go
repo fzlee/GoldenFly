@@ -51,6 +51,34 @@ func GetPages (c interface {}, p *common.Pagination) ([]Page, error) {
 	var pages []Page;
 
 	offset := (p.Page - 1) * p.Size
-	err := common.DB.Where(c).Offset(offset).Limit(p.Size).Find(&pages).Error
+	err := common.DB.Where(c).Order("id desc").Offset(offset).Limit(p.Size).Find(&pages).Error
 	return pages, err
+}
+
+
+type Comment struct {
+	ID              int         `gorm:"column:id;primary_key" json:"id"`
+	Email           string      `gorm:"column:email" json:"email"`
+	Nickname        string      `gorm:"column:nickname" json:"nickname"`
+	Content         string      `gorm:"column:content" json:"content"`
+	To              null.String `gorm:"column:to" json:"to"`
+	CreateTime      time.Time   `gorm:"column:create_time" json:"create_time"`
+	IP              string      `gorm:"column:ip" json:"ip"`
+	Website         string      `gorm:"column:website" json:"website"`
+	PageID          int         `gorm:"column:page_id" json:"page_id"`
+	ParentCommentID null.Int    `gorm:"column:parent_comment_id" json:"parent_comment_id"`
+}
+
+// TableName sets the insert table name for this struct type
+func (c *Comment) TableName() string {
+	return "comment"
+}
+
+
+func GetComments (c interface {}, p *common.Pagination) ([] Comment, error) {
+	var comments []Comment;
+
+	offset := (p.Page - 1) * p.Size
+	err := common.DB.Where(c).Order("id").Offset(offset).Limit(p.Size).Find(&comments).Error
+	return comments, err
 }

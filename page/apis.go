@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func PageList(c *gin.Context) {
+func ListPages (c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	pages, _ := GetPages(&Page{}, &pagination)
 
@@ -18,6 +18,17 @@ func PageList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
 
+func RetrievePageMeta (c *gin.Context) {
+	url :=  c.Param("name")
+	page, err := GetPage(&Page{URL: url})
+	if err != nil {
+		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
+	}
+	result := (&PageSerializer{c, &page}).MetaResponse()
+	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
+
+}
+
 func PagesPreview(c * gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	pages, _ := GetPages(&Page{}, &pagination)
@@ -25,6 +36,25 @@ func PagesPreview(c * gin.Context) {
 	results := make([] *PageResponse, len(pages))
 	for i := range pages {
 		results[i] = (&PageSerializer{c, &pages[i]}).PreviewResponse()
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
+}
+
+
+func PageComments (c *gin.Context) {
+	pagination := common.ParsePageAndSize(c)
+	url:= c.Param("url")
+	page, err := GetPage(&Page{URL: url})
+
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+	}
+	comments, _ := GetComments(&Comment{PageID: page.ID}, &pagination)
+
+	results := make([] *CommentResponse, len(comments))
+	for i := range comments {
+		results[i] = (&CommentSerializer{c, &comments[i]}).CommentResponse(false)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
