@@ -20,9 +20,8 @@ type UserResponse struct {
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
-func (self *UserSerializer) Response () UserResponse {
-	return UserResponse{
-		ID: self.ID,
+func (self *UserSerializer) Response () *UserResponse {
+	return &UserResponse{
 		UID: self.UID,
 		Username: self.Username,
 		Nickname: self.Nickname,

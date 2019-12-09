@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"golden_fly/common"
 	"golden_fly/config"
+	"golden_fly/page"
 	"golden_fly/user"
 )
 
@@ -31,6 +32,7 @@ func initDatabase() *gorm.DB {
 func initRouters (engine *gin.Engine){
 	router := engine.Group("/api")
 	user.RegisterRouter(router)
+	page.RegisterRouter(router)
 }
 
 func initSession (engine *gin.Engine) {

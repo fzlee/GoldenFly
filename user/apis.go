@@ -11,8 +11,7 @@ func UsersList(c *gin.Context) {
 	results := make([] *UserResponse, len(users))
 
 	for i := range results{
-		result := (&UserSerializer{c, users[i]}).Response()
-		results[i] = &result
+		results[i] = (&UserSerializer{c, users[i]}).Response()
 	}
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }

@@ -35,7 +35,7 @@ func (u *User) TableName() string {
 	return "user"
 }
 
-func GetUser(condition interface{}) (User, error) {
+func GetUser (condition interface{}) (User, error) {
 	var user User
 	err := common.DB.Where(condition).First(&user).Error
 	return user, err
