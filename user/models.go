@@ -2,11 +2,12 @@ package user
 
 import (
 	"database/sql"
-	"time"
-
 	"github.com/alexandrevicenzi/unchained"
 	"github.com/guregu/null"
+	"time"
+
 	"golden_fly/common"
+	"golden_fly/config"
 )
 
 var (
@@ -64,4 +65,70 @@ func (self *User) HashPassword(password string) string {
 	} else {
 		return ""
 	}
+}
+
+func (self *User) GetOrExtendToken () AuthToken {
+	token, err := GetToken(&AuthToken{UID: self.UID})
+	if err != nil  {
+		return *createTokenFor(self.UID)
+	} else if token.IsGoingToExpired() {
+		token.extendToken()
+		return token
+	} else {
+		return token
+	}
+}
+
+type AuthToken struct {
+	Key       string    `gorm:"column:key;primary_key" json:"key"`
+	UID       string    `gorm:"column:uid" json:"uid"`
+	Created   time.Time `gorm:"column:created" json:"created"`
+	ExpiredAt time.Time `gorm:"column:expired_at" json:"expired_at"`
+}
+
+// TableName sets the insert table name for this struct type
+func (a *AuthToken) TableName() string {
+	return "auth_token"
+}
+
+func GetToken(condition interface{}) (AuthToken, error) {
+	var token AuthToken
+	err := common.DB.Where(condition).First(&token).Error
+	return token, err
+}
+
+func createTokenFor(uid string) *AuthToken {
+	key := common.RandomString(20)
+	now := time.Now()
+	conf := config.Get()
+
+	token := &AuthToken{
+		Key:       key,
+		UID:       uid,
+		Created:   now,
+		ExpiredAt: now.AddDate(0, 0, conf.TokenExpiredDays),
+	}
+	common.DB.Create(token)
+	return token
+}
+
+func (self *AuthToken) extendToken(){
+	now := time.Now()
+	conf := config.Get()
+	common.DB.Delete(&self)
+	self.Key = common.RandomString(20)
+	self.ExpiredAt = now.AddDate(0, 0, conf.TokenExpiredDays)
+	common.DB.Save(&self)
+}
+
+func (self *AuthToken) HasExpired () bool {
+	now := time.Now()
+	return self.ExpiredAt.Before(now)
+}
+
+func (self *AuthToken) IsGoingToExpired() bool {
+	conf := config.Get()
+	then := time.Now()
+	then.AddDate(0, 0, conf.TokenRefreshDays)
+	return self.ExpiredAt.Before(then)
 }

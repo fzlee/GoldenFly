@@ -43,5 +43,8 @@ func Login(c *gin.Context) {
 		return
 	}
 	serializer := UserSerializer{c, user}
+
+	token := user.GetOrExtendToken()
+	WriteCredentialToCookie(c, &user, &token)
 	c.JSON(http.StatusOK, gin.H{"data": serializer.LoginResponse(), "success": true})
 }
