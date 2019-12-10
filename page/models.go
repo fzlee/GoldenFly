@@ -50,11 +50,16 @@ func GetPage (condition interface{}) (Page, error){
 func GetPages (c interface {}, p *common.Pagination) ([]Page, error) {
 	var pages []Page;
 
-	offset := (p.Page - 1) * p.Size
-	err := common.DB.Where(c).Order("id desc").Offset(offset).Limit(p.Size).Find(&pages).Error
+	err := common.DB.Where(c).Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&pages).Error
 	return pages, err
 }
 
+
+func SearchPages(tagname string, p *common.Pagination) ([] Page, error) {
+	var pages [] Page
+	err := common.DB.Where("tags like ?", "%," + tagname + ",%").Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&pages).Error
+	return pages, err
+}
 
 func GetPagesByIDs (ids [] int) ([]Page, error) {
 	var pages []Page;
