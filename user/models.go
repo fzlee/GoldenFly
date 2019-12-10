@@ -132,3 +132,13 @@ func (self *AuthToken) IsGoingToExpired() bool {
 	then.AddDate(0, 0, conf.TokenRefreshDays)
 	return self.ExpiredAt.Before(then)
 }
+
+
+func ValidateToken(key string) (User, error){
+	token, err := GetToken(&AuthToken{Key: key})
+	if err == nil && !token.HasExpired(){
+		var user, err = GetUser(&User{UID: token.UID})
+		return user, err
+	}
+	return User{}, err
+}

@@ -28,7 +28,7 @@ func Login(c *gin.Context) {
 
 	loginValidator := LoginValidator{}
 	if err := loginValidator.Bind(c); err != nil {
-		common.ResponseWithCode(c, common.ParameterMissing)
+		common.ResponseWithCode(c, common.CodeParameterMissing)
 		return
 	}
 	user, err := GetUser(&User{Username: loginValidator.Username})

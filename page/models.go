@@ -56,6 +56,12 @@ func GetPages (c interface {}, p *common.Pagination) ([]Page, error) {
 }
 
 
+func GetPagesByIDs (ids [] int) ([]Page, error) {
+	var pages []Page;
+	err := common.DB.Where("id in ?", ids).Find(&pages).Error
+	return pages, err
+}
+
 type Comment struct {
 	ID              int         `gorm:"column:id;primary_key" json:"id"`
 	Email           string      `gorm:"column:email" json:"email"`
@@ -75,10 +81,46 @@ func (c *Comment) TableName() string {
 }
 
 
-func GetComments (c interface {}, p *common.Pagination) ([] Comment, error) {
-	var comments []Comment;
+func GetComments (c interface {}, p *common.Pagination, order string) ([] Comment, error) {
+	var comments []Comment
 
 	offset := (p.Page - 1) * p.Size
-	err := common.DB.Where(c).Order("id").Offset(offset).Limit(p.Size).Find(&comments).Error
+	err := common.DB.Where(c).Order(order).Offset(offset).Limit(p.Size).Find(&comments).Error
+
+	// aggregate comment
+	ids := make([] int, len(comments))
+	for i := range(comments) {
+		ids[i] = comments[i].PageID
+	}
 	return comments, err
 }
+
+
+type Link struct {
+	ID          int       `gorm:"column:id;primary_key" json:"id"`
+	Name        string    `gorm:"column:name" json:"name"`
+	Href        string    `gorm:"column:href" json:"href"`
+	Description string    `gorm:"column:description" json:"description"`
+	CreateTime  time.Time `gorm:"column:create_time" json:"create_time"`
+	Display     bool      `gorm:"column:display" json:"display"`
+}
+
+// TableName sets the insert table name for this struct type
+func (l *Link) TableName() string {
+	return "link"
+}
+
+func GetLink(c interface{}) (Link, error) {
+	var link Link
+	err :=common.DB.Where(c).First(&link).Error
+	return link, err
+}
+
+func GetLinks(c interface{}, p *common.Pagination) ([]Link, error) {
+	var links [] Link
+	err := common.DB.Where(c).Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&links).Error
+	return links, err
+}
+
+
+

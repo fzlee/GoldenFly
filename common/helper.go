@@ -36,3 +36,12 @@ func RandomString(n int) string {
 	}
 	return string(b)
 }
+
+
+func MinINT (a, b int) int {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}

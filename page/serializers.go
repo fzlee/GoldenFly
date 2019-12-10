@@ -3,6 +3,7 @@ package page
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/guregu/null"
+	"golden_fly/common"
 	"time"
 )
 type PageSerializer struct {
@@ -101,6 +102,11 @@ type CommentResponse struct {
 	Website         string      `json:"website"`
 	PageID          int         `json:"page_id"`
 	ParentCommentID null.Int    `json:"parent_comment_id"`
+
+	Page struct {
+		Title 		string		`json:"title"`
+		URL         string		`json:"url"`
+	}  `json:"page,omitempty"`
 }
 
 
@@ -118,4 +124,71 @@ func (self * CommentSerializer) CommentResponse (IsAdmin bool) *CommentResponse 
 		r.Email = self.Email
 	}
 	return r
+}
+
+
+func (self * CommentSerializer) SidebarCommentResponse () *CommentResponse {
+
+	r := &CommentResponse{
+		Nickname:        self.Nickname,
+		Content:         self.Content,
+		To:              self.To,
+		CreateTime:		 self.CreateTime,
+	}
+
+	page, err := GetPage(&Page{ID: self.PageID})
+	if err == nil {
+		r.Page.Title = page.Title
+		r.Page.URL = page.URL
+	}
+	return r
+}
+
+type LinkSerializer struct {
+	c *gin.Context
+	* Link
+}
+
+type LinkResponse struct {
+	ID          int       `json:"id,omitempty"`
+	Name        string    `json:"name,omitempty"`
+	Href        string    `json:"href,omitempty"`
+	Description string    `json:"description,omitempty"`
+	CreateTime  time.Time `json:"create_time,oitempty"`
+	Display     bool      `json:"display,omitempty"`
+}
+
+func (self *LinkSerializer) getSidebarResponse () *LinkResponse {
+	return &LinkResponse{
+		Name: self.Name,
+		Href: self.Href,
+		Description: self.Description,
+	}
+}
+
+
+type Tag struct {
+	ID     int    `gorm:"column:id;primary_key" json:"id"`
+	Name   string `gorm:"column:name" json:"name"`
+	PageID int    `gorm:"column:page_id" json:"page_id"`
+}
+
+// TableName sets the insert table name for this struct type
+func (t *Tag) TableName() string {
+	return "tag"
+}
+
+func GetDistinctTags() []string {
+	type Result struct {
+		Name string
+		count int
+	}
+	var results []Result
+	common.DB.Raw("select name from tag group by name order by count(name) desc").Scan(&results)
+
+	tags := make([]string, len(results))
+	for i := range(results) {
+		tags[i] = results[i].Name
+	}
+	return tags
 }

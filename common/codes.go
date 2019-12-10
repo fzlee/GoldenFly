@@ -1,10 +1,10 @@
 package common
 
 const (
-	CodeUnauthorized = 1001
+	CodeUnauthorized     = 1001
 	CodePermissionDenied = 1002
-	CodeNotFound = 1003
-	ParameterMissing = 1004
+	CodeNotFound         = 1003
+	CodeParameterMissing = 1004
 
 	LoginFailed = 2001
 )

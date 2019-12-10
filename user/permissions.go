@@ -1,7 +1,6 @@
 package user
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golden_fly/common"
 	"golden_fly/config"
@@ -9,12 +8,16 @@ import (
 )
 
 func AdminRequired(c *gin.Context){
-	session := sessions.Default(c)
-	user := session.Get(config.SessionUserKey)
-	if user != nil {
-		// Abort the request with the appropriate error code
+	conf := config.Get()
+	key, err1 := c.Cookie(conf.CookieToken)
+	if err1 != nil {
 		common.AbortWithCode(c, http.StatusForbidden, common.CodePermissionDenied)
+		return
 	}
-	// Continue down the chain to handler etc
+	var _ , err2 = ValidateToken(key)
+	if err2 != nil {
+		common.AbortWithCode(c, http.StatusForbidden, common.CodePermissionDenied)
+		return
+	}
 	c.Next()
 }

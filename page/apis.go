@@ -50,7 +50,7 @@ func PageComments (c *gin.Context) {
 	if err != nil {
 		common.ResponseWithCode(c, common.CodeNotFound)
 	}
-	comments, _ := GetComments(&Comment{PageID: page.ID}, &pagination)
+	comments, _ := GetComments(&Comment{PageID: page.ID}, &pagination, "id")
 
 	results := make([] *CommentResponse, len(comments))
 	for i := range comments {
@@ -58,4 +58,9 @@ func PageComments (c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
+}
+
+func PageSideBar (c *gin.Context) {
+	result := GenerateSideBar(c)
+	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
