@@ -20,4 +20,6 @@ func RegisterRouter(router *gin.RouterGroup) {
 	adminGroup.GET("/articles/:url/", RetrievePage)
 	adminGroup.DELETE("/articles/:url/", DeletePage)
 	adminGroup.PUT("/articles/save/", SavePage)
+	adminGroup.GET("/comments/", ListComments)
+	adminGroup.DELETE("/comments/:id/", DeleteComment)
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golden_fly/common"
 	"net/http"
+	"strconv"
 )
 
 func ListPages (c *gin.Context) {
@@ -180,5 +181,27 @@ func CreateCommentView(c *gin.Context) {
 	}
 
 	CreateComment(&v, &to, c.ClientIP(), page.ID)
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
+
+func ListComments(c *gin.Context) {
+	pagination := common.ParsePageAndSize(c)
+	comments, _ := GetComments(&Comment{}, &pagination, "id desc")
+
+	results := make([] *CommentResponse, len(comments))
+	for i := range comments {
+		results[i] = (&CommentSerializer{c, &comments[i]}).CommentResponse(true)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
+}
+
+
+func DeleteComment (c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	comment, _ := GetComment(&Comment{ID: id})
+
+	common.DB.Delete(&comment)
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }

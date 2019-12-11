@@ -135,6 +135,13 @@ func (self * CommentSerializer) CommentResponse (IsAdmin bool) *CommentResponse 
 		r.Website = self.Website
 		r.IP = self.IP
 		r.Email = self.Email
+		r.ID = self.ID
+	}
+
+	page, err := GetPage(&Page{ID: self.PageID})
+	if err == nil {
+		r.Page.Title = &page.Title
+		r.Page.URL = &page.URL
 	}
 	return r
 }
