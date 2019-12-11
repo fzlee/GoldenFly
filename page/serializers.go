@@ -2,8 +2,6 @@ package page
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/guregu/null"
-	"golden_fly/common"
 	"time"
 )
 type PageSerializer struct {
@@ -92,30 +90,44 @@ type CommentSerializer struct {
 }
 
 type CommentResponse struct {
-	ID              int         `json:"_"`
-	Email           string      `json:"email"`
+	ID              int         `json:"id"`
+	Email           string      `json:"email,omitempty"`
 	Nickname        string      `json:"nickname"`
 	Content         string      `json:"content"`
-	To              null.String `json:"to"`
+	To              * string       `json:"to"`
 	CreateTime      time.Time   `json:"create_time"`
-	IP              string      `json:"ip"`
-	Website         string      `json:"website"`
+	IP              string      `json:"ip,omitempty"`
+	Website         string      `json:"website,omitempty"`
 	PageID          int         `json:"page_id"`
-	ParentCommentID null.Int    `json:"parent_comment_id"`
+	ParentCommentID * int    `json:"parent_comment_id"`
 
 	Page struct {
-		Title 		string		`json:"title"`
-		URL         string		`json:"url"`
+		Title 		*string		`json:"title"`
+		URL         *string		`json:"url"`
 	}  `json:"page,omitempty"`
+
+	ParentComment struct {
+		Nickname * string
+		ID       * int
+	}`json:"parent_comment,omitempty"`
 }
 
 
 func (self * CommentSerializer) CommentResponse (IsAdmin bool) *CommentResponse {
 	r := &CommentResponse{
+		ID:					self.ID,
 		Nickname:			self.Nickname,
 		Content:			self.Content,
 		To:					self.To,
 		CreateTime:			self.CreateTime,
+	}
+
+	if self.ParentCommentID != nil {
+		pComment, err := GetComment(&Comment{ID: *self.ParentCommentID})
+		if err != nil {
+			r.ParentComment.Nickname = &pComment.Nickname
+			r.ParentComment.ID = &pComment.ID
+		}
 	}
 
 	if IsAdmin {
@@ -138,8 +150,8 @@ func (self * CommentSerializer) SidebarCommentResponse () *CommentResponse {
 
 	page, err := GetPage(&Page{ID: self.PageID})
 	if err == nil {
-		r.Page.Title = page.Title
-		r.Page.URL = page.URL
+		r.Page.Title = &page.Title
+		r.Page.URL = &page.URL
 	}
 	return r
 }
@@ -178,17 +190,4 @@ func (t *Tag) TableName() string {
 	return "tag"
 }
 
-func GetDistinctTags() []string {
-	type Result struct {
-		Name string
-		count int
-	}
-	var results []Result
-	common.DB.Raw("select name from tag group by name order by count(name) desc").Scan(&results)
 
-	tags := make([]string, len(results))
-	for i := range(results) {
-		tags[i] = results[i].Name
-	}
-	return tags
-}

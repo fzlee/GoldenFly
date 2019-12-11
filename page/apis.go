@@ -84,3 +84,31 @@ func PagesSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 
 }
+
+
+func CreateCommentView(c *gin.Context) {
+	url :=  c.Param("url")
+
+	page, err := GetPage(&Page{URL: url})
+	if err != nil {
+		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
+		return
+	}
+
+	var v CommentValidator
+	if err := c.BindJSON(&v); err != nil {
+		common.ResponseWithPanic(c, err)
+		return
+	}
+
+	var to string
+	if v.CommentID != nil {
+		comment, err := GetComment(&Comment{ID: *v.CommentID})
+		if err == nil {
+			to = comment.Nickname
+		}
+	}
+
+	CreateComment(&v, &to, c.ClientIP(), page.ID)
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}

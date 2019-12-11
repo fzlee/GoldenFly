@@ -9,4 +9,5 @@ func RegisterRouter(router *gin.RouterGroup) {
 	router.GET("/articles-search/", PagesSearch)
 	router.GET("/articles/:url/meta/", RetrievePageMeta)
 	router.GET("/articles/:url/comments/", PageComments)
+	router.POST("/articles/:url/comments/", CreateCommentView)
 }

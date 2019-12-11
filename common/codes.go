@@ -12,6 +12,6 @@ var ErrorCodes = map[int]string{
 	1001: "Unauthorized",
 	1002: "Permission Denied",
 	1003: "object not found",
-	1004: "certain parameters are missing",
+	1004: "certain parameters are invalid or missing",
 	2001: "Invalid email/password",
 }

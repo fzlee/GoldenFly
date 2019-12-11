@@ -72,12 +72,12 @@ type Comment struct {
 	Email           string      `gorm:"column:email" json:"email"`
 	Nickname        string      `gorm:"column:nickname" json:"nickname"`
 	Content         string      `gorm:"column:content" json:"content"`
-	To              null.String `gorm:"column:to" json:"to"`
+	To              * string      `gorm:"column:to" json:"to"`
 	CreateTime      time.Time   `gorm:"column:create_time" json:"create_time"`
 	IP              string      `gorm:"column:ip" json:"ip"`
 	Website         string      `gorm:"column:website" json:"website"`
 	PageID          int         `gorm:"column:page_id" json:"page_id"`
-	ParentCommentID null.Int    `gorm:"column:parent_comment_id" json:"parent_comment_id"`
+	ParentCommentID * int         `gorm:"column:parent_comment_id" json:"parent_comment_id"`
 }
 
 // TableName sets the insert table name for this struct type
@@ -85,6 +85,11 @@ func (c *Comment) TableName() string {
 	return "comment"
 }
 
+func GetComment (c interface{}) (Comment, error) {
+	var comment Comment
+	err := common.DB.Where(c).First(&comment).Error
+	return comment, err
+}
 
 func GetComments (c interface {}, p *common.Pagination, order string) ([] Comment, error) {
 	var comments []Comment
@@ -98,6 +103,23 @@ func GetComments (c interface {}, p *common.Pagination, order string) ([] Commen
 		ids[i] = comments[i].PageID
 	}
 	return comments, err
+}
+
+func CreateComment (v *CommentValidator, target *string, ip string, pageID int) * Comment{
+	comment := &Comment{
+		Email:          v.Email,
+		Nickname:       v.Nickname,
+		Content:        v.Content,
+		To:             target,
+		CreateTime:     time.Now(),
+		IP:             ip,
+		Website:        v.Website,
+		PageID:          pageID,
+		ParentCommentID: v.CommentID,
+	}
+
+	common.DB.Create(comment)
+	return comment
 }
 
 
@@ -128,4 +150,17 @@ func GetLinks(c interface{}, p *common.Pagination) ([]Link, error) {
 }
 
 
+func GetDistinctTags() []string {
+	type Result struct {
+		Name string
+		count int
+	}
+	var results []Result
+	common.DB.Raw("select name from tag group by name order by count(name) desc").Scan(&results)
 
+	tags := make([]string, len(results))
+	for i := range(results) {
+		tags[i] = results[i].Name
+	}
+	return tags
+}
