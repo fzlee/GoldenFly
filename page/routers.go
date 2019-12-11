@@ -10,11 +10,14 @@ func RegisterRouter(router *gin.RouterGroup) {
 	router.GET("/articles-preview/", PagesPreview)
 	router.GET("/articles-sidebar/", PageSideBar)
 	router.GET("/articles-search/", PagesSearch)
+	router.POST("/articles-inplace/", PagesInPlace)
 	router.GET("/articles/:url/meta/", RetrievePageMeta)
 	router.GET("/articles/:url/comments/", PageComments)
 	router.POST("/articles/:url/comments/", CreateCommentView)
 
 	adminGroup := router.Group("/")
 	adminGroup.Use(user.AdminRequired)
+	adminGroup.GET("/articles/:url/", RetrievePage)
 	adminGroup.DELETE("/articles/:url/", DeletePage)
+	adminGroup.PUT("/articles/save/", SavePage)
 }

@@ -10,15 +10,15 @@ type PageSerializer struct {
 }
 
 type PageResponse struct {
-    ID				uint		 	`json:"_"`
+    ID				int		 	`json:"id"`
     URL				string			`json:"url"`
     Title			string			`json:"title"`
     ContentDigest 	string			`json:"content_digest,omitempty"`
     Content			string			`json:"content,omitempty"`
     Keywords 		string			`json:"keywords"`
     Metacontent 	string   		`json:metacontent,omitempty`
-    CreateTime		time.Time			`json:"create_time"`
-    UpdateTime		time.Time			`json:"update_time"`
+    CreateTime		* time.Time			`json:"create_time"`
+    UpdateTime		* time.Time			`json:"update_time"`
     NeedKey			bool			`json:"need_key"`
     Password		string			`json:"password,omitempty"`
     Tags			string			`json:"tags"`
@@ -33,6 +33,7 @@ type PageResponse struct {
 
 func (self * PageSerializer) FullResponse() *PageResponse {
 	return &PageResponse{
+		ID:			   self.ID,
 		URL:           self.URL,
 		Title:         self.Title,
 		ContentDigest: self.ContentDigest,

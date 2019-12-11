@@ -22,8 +22,8 @@ type Page struct {
 	Content       string    `gorm:"column:content" json:"content"`
 	Keywords      string    `gorm:"column:keywords" json:"keywords"`
 	MetaContent   string    `gorm:"column:metacontent" json:"metacontent"`
-	CreateTime    time.Time `gorm:"column:create_time" json:"create_time"`
-	UpdateTime    time.Time `gorm:"column:update_time" json:"update_time"`
+	CreateTime    * time.Time `gorm:"column:create_time" json:"create_time"`
+	UpdateTime    * time.Time `gorm:"column:update_time" json:"update_time"`
 	NeedKey       bool       `gorm:"column:need_key" json:"need_key"`
 	Password      string    `gorm:"column:password" json:"password"`
 	Tags          string    `gorm:"column:tags" json:"tags"`
@@ -42,7 +42,7 @@ func (p *Page) TableName() string {
 
 
 func GetPage (condition interface{}) (Page, error){
-	var page Page;
+	var page Page
 	err := common.DB.Where(condition).First(&page).Error
 	return page, err
 }

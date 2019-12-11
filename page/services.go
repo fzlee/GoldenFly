@@ -4,6 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"golden_fly/common"
 	"golden_fly/config"
+	"gopkg.in/russross/blackfriday.v2"
+	"regexp"
+	"strings"
+	"time"
 )
 
 func GenerateSideBar(c *gin.Context) *gin.H{
@@ -83,6 +87,109 @@ func TransactionDeletePage (page *Page) error {
 	if err != nil {
 		tx.Rollback()
 		return err
+	}
+
+	return tx.Commit().Error
+}
+
+
+func UpdateOrCreatePage(v *SavePageValidator, page *Page) error{
+	var err error
+	if v.PageID != nil {
+		page2, _ := GetPage(&Page{ID: *v.PageID})
+		page = &page2
+	} else {
+		page = &Page{}
+	}
+
+	page.URL = v.URL
+	page.Title = v.Title
+	page.Content = v.Content
+	page.MetaContent = v.MetaContent
+	page.NeedKey = v.NeedKey
+	page.Tags = v.Tags
+	page.Editor = v.Editor
+	page.AllowComment = v.AllowComment
+	page.AllowVisit = v.AllowVisit
+	page.IsOriginal = v.IsOriginal
+
+	if page.NeedKey {
+		page.Password = v.Password
+	} else {
+		page.Password = ""
+	}
+
+	// handle content
+	if page.Editor == "html" {
+		page.HTML = page.Content
+	} else {
+		page.HTML = string(blackfriday.Run([]byte(page.Content)))
+	}
+	r, _ := regexp.Compile("<.*?>")
+	page.ContentDigest = r.ReplaceAllString(page.HTML, "")
+	// handle time
+	now := time.Now()
+	page.UpdateTime = &now
+	if page.CreateTime == nil {
+		page.CreateTime = &now
+	}
+	err = common.DB.Save(page).Error
+	if err != nil {
+		return err
+	}
+
+	// handle tags
+	if ! strings.HasPrefix(page.Tags, ",") {
+		page.Tags = "," + page.Tags
+	}
+	if ! strings.HasSuffix(page.Tags, ",") {
+		page.Tags = page.Tags + ","
+	}
+
+	err = common.DB.Save(page).Error
+	if err != nil {
+		return err
+	}
+	return TransactionUpdatePageTags(page)
+}
+
+
+func TransactionUpdatePageTags (page *Page) error {
+	common.DB.Begin()
+	var err error
+	// delete tags and create new
+	tx := common.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	err = tx.Where("page_id = ?", page.ID).Delete(&Tag{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tags := strings.Split(page.Tags, "")
+
+	for i := range(tags) {
+		tag := strings.Trim(tags[i], " ")
+		if tag != "" {
+			err = tx.Create(&Tag{
+				Name:   tag,
+				PageID: page.ID,
+			}).Error
+
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
 	}
 
 	return tx.Commit().Error
