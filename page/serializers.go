@@ -179,15 +179,5 @@ func (self *LinkSerializer) getSidebarResponse () *LinkResponse {
 }
 
 
-type Tag struct {
-	ID     int    `gorm:"column:id;primary_key" json:"id"`
-	Name   string `gorm:"column:name" json:"name"`
-	PageID int    `gorm:"column:page_id" json:"page_id"`
-}
-
-// TableName sets the insert table name for this struct type
-func (t *Tag) TableName() string {
-	return "tag"
-}
 
 

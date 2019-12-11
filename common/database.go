@@ -16,6 +16,7 @@ func InitDB() (*gorm.DB, error) {
 	if err == nil {
 		db.DB().SetMaxIdleConns(conf.MaxIdleConn)
 		DB = db
+		db.LogMode(conf.DebugMode)
 		// db.AutoMigrate(&models.AdminUser{})
 		return db, err
 	}

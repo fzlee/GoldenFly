@@ -15,6 +15,7 @@ func WriteCredentialToCookie (c *gin.Context, user *User, token *AuthToken) {
 		Name:       conf.CookieToken,
 		Value:      token.Key,
 		Expires:    token.ExpiredAt,
+		Path:       "/",
 	})
 
 	cookieUser := (&UserSerializer{c, *user}).LoginResponse()
@@ -28,5 +29,6 @@ func WriteCredentialToCookie (c *gin.Context, user *User, token *AuthToken) {
 		Name:       conf.CookieUser,
 		Value:      cookieData4,
 		Expires:    token.ExpiredAt,
+		Path:       "/",
 	})
 }

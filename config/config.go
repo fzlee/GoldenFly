@@ -16,6 +16,7 @@ type Config struct {
 	BlogAnnouncementURL string		`yaml:"blog_announcement_url"`
 	BlogLinkCount		int         `yaml:"blog_link_count"`
 	BlogCommentCount	int      	`yaml:"blog_comment_count"`
+	DebugMode			bool      	`yaml:"debug_mode"`
 }
 
 const (

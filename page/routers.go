@@ -1,6 +1,9 @@
 package page
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"golden_fly/user"
+)
 
 func RegisterRouter(router *gin.RouterGroup) {
 	router.GET("/articles/", ListPages)
@@ -10,4 +13,8 @@ func RegisterRouter(router *gin.RouterGroup) {
 	router.GET("/articles/:url/meta/", RetrievePageMeta)
 	router.GET("/articles/:url/comments/", PageComments)
 	router.POST("/articles/:url/comments/", CreateCommentView)
+
+	adminGroup := router.Group("/")
+	adminGroup.Use(user.AdminRequired)
+	adminGroup.DELETE("/articles/:url/", DeletePage)
 }

@@ -72,12 +72,12 @@ type Comment struct {
 	Email           string      `gorm:"column:email" json:"email"`
 	Nickname        string      `gorm:"column:nickname" json:"nickname"`
 	Content         string      `gorm:"column:content" json:"content"`
-	To              * string      `gorm:"column:to" json:"to"`
+	To              * string    `gorm:"column:to" json:"to"`
 	CreateTime      time.Time   `gorm:"column:create_time" json:"create_time"`
 	IP              string      `gorm:"column:ip" json:"ip"`
 	Website         string      `gorm:"column:website" json:"website"`
 	PageID          int         `gorm:"column:page_id" json:"page_id"`
-	ParentCommentID * int         `gorm:"column:parent_comment_id" json:"parent_comment_id"`
+	ParentCommentID * int       `gorm:"column:parent_comment_id" json:"parent_comment_id" sql:"type:bigint REFFERENCES comment(id) ON DELETE CASCADE"`
 }
 
 // TableName sets the insert table name for this struct type
@@ -163,4 +163,16 @@ func GetDistinctTags() []string {
 		tags[i] = results[i].Name
 	}
 	return tags
+}
+
+
+type Tag struct {
+	ID     int    `gorm:"column:id;primary_key" json:"id"`
+	Name   string `gorm:"column:name" json:"name"`
+	PageID int    `gorm:"column:page_id" json:"page_id"`
+}
+
+// TableName sets the insert table name for this struct type
+func (t *Tag) TableName() string {
+	return "tag"
 }

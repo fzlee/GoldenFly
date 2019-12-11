@@ -18,6 +18,25 @@ func ListPages (c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
 
+
+func DeletePage (c *gin.Context) {
+	var err error
+	var page Page
+	url := c.Param("url")
+	page, err = GetPage(&Page{URL: url})
+	if err != nil {
+		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
+	}
+	err = TransactionDeletePage(&page)
+	if err != nil {
+		common.ResponseWithPanic(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
+
 func RetrievePageMeta (c *gin.Context) {
 	url :=  c.Param("url")
 	page, err := GetPage(&Page{URL: url})
@@ -97,7 +116,7 @@ func CreateCommentView(c *gin.Context) {
 
 	var v CommentValidator
 	if err := c.BindJSON(&v); err != nil {
-		common.ResponseWithPanic(c, err)
+		common.ResponseWithValidation(c, err)
 		return
 	}
 

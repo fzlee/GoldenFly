@@ -51,3 +51,39 @@ func generateSidebarComments(c *gin.Context) ([] *CommentResponse){
 func generateSidebarTags ()[]string {
 	return GetDistinctTags()
 }
+
+func TransactionDeletePage (page *Page) error {
+	var err error
+	// delete page, tags, comments
+	tx := common.DB.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	err = tx.Where("page_id = ?", page.ID).Delete(Comment{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Where("page_id = ?", page.ID).Delete(Tag{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Delete(&page).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
