@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/alexandrevicenzi/unchained v1.2.0
 	github.com/gin-contrib/sessions v0.0.1
+	github.com/gin-contrib/static v0.0.0-20191128031702-f81c604d8ac2
 	github.com/gin-gonic/contrib v0.0.0-20190923054218-35076c1b2bea // indirect
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-sql-driver/mysql v1.4.1

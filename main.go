@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golden_fly/common"
 	"golden_fly/config"
@@ -30,9 +30,15 @@ func initDatabase() *gorm.DB {
 }
 
 func initRouters (engine *gin.Engine){
+	conf := config.Get()
 	router := engine.Group("/api")
 	user.RegisterRouter(router)
 	page.RegisterRouter(router)
+
+	// sitemap
+	router.GET("/sitemap.xml", user.GenerateSitemap)
+	// static folder
+	engine.StaticFS("/media", gin.Dir(conf.MediaFolder, false))
 }
 
 func initSession (engine *gin.Engine) {
