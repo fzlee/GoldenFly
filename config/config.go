@@ -17,6 +17,7 @@ type Config struct {
 	BlogLinkCount		int         `yaml:"blog_link_count"`
 	BlogCommentCount	int      	`yaml:"blog_comment_count"`
 	DebugMode			bool      	`yaml:"debug_mode"`
+	MediaFolder         string      `yaml:"media_folder"`
 }
 
 const (

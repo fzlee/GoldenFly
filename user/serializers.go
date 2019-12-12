@@ -38,3 +38,4 @@ func (self *UserSerializer) LoginResponse() *UserResponse {
 		Role:      self.Role,
 	}
 }
+

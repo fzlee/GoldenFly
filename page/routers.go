@@ -22,8 +22,10 @@ func RegisterRouter(router *gin.RouterGroup) {
 	adminGroup.PUT("/articles/save/", SavePage)
 	adminGroup.GET("/comments/", ListComments)
 	adminGroup.DELETE("/comments/:id/", DeleteComment)
-	adminGroup.GET("/links/", ListLinks)
+	adminGroup.GET("/links/", ListLinksView)
 	adminGroup.POST("/links/", CreateLinkView)
 	adminGroup.DELETE("/links/:id/", DeleteLinkView)
 	adminGroup.PUT("/links/:id/", UpdateLinkView)
+	adminGroup.GET("/medias/", ListMediasView)
+	adminGroup.DELETE("/medias/:id/", DeleteMediaView)
 }

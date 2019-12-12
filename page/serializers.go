@@ -198,3 +198,32 @@ func (self *LinkSerializer) FullResponse () *LinkResponse {
 	}
 }
 
+type MediaSerializer struct {
+	c *gin.Context
+	* Media
+}
+
+type MediaResponse struct {
+	ID 			int			`json:"id"`
+	FileID		string			`json:"fileid"`
+	FileName	string			`json:"filename"`
+	Version		int				`json:"version"`
+	ContentType	string			`json:"content_type"`
+	Size		int				`json:"size"`
+	CreateTime	time.Time		`json:"create_time"`
+	Display		bool			`json:"display"`
+}
+
+
+func (self *MediaSerializer) FullResponse () *MediaResponse{
+	return &MediaResponse{
+		ID:          self.ID,
+		FileID:      self.FileID,
+		FileName:    self.FileName,
+		Version:     self.Version,
+		ContentType: self.ContentType,
+		Size:        self.Size,
+		CreateTime:  self.CreateTime,
+		Display:     self.Display,
+	}
+}

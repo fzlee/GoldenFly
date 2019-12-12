@@ -207,7 +207,7 @@ func DeleteComment (c *gin.Context) {
 }
 
 
-func ListLinks(c *gin.Context) {
+func ListLinksView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	links , _ := GetLinks(&Link{}, &pagination)
 
@@ -285,4 +285,38 @@ func UpdateLinkView (c *gin.Context) {
 	UpdateLink(&link, &v)
 	c.JSON(http.StatusOK, gin.H{"success": true})
 
+}
+
+
+func ListMediasView(c *gin.Context) {
+	pagination := common.ParsePageAndSize(c)
+	medias , _ := GetMedias(&Media{}, &pagination)
+
+	results := make([] *MediaResponse, len(medias))
+	for i := range medias{
+		results[i] = (&MediaSerializer{c, &medias[i]}).FullResponse()
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": results})
+}
+
+
+func DeleteMediaView (c *gin.Context) {
+	var id int
+	var err error
+	id, err = strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	var media Media
+	media, err = GetMedia(&Media{ID: id})
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	media.DeleteLocalFile()
+	err = common.DB.Delete(&media).Error
+	c.JSON(http.StatusOK, gin.H{"success": true})
 }

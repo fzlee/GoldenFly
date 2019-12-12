@@ -3,6 +3,9 @@ package page
 import (
 	"database/sql"
 	"golden_fly/common"
+	"golden_fly/config"
+	"os"
+	"path"
 	"time"
 
 	"github.com/guregu/null"
@@ -176,3 +179,44 @@ type Tag struct {
 func (t *Tag) TableName() string {
 	return "tag"
 }
+
+
+type Media struct {
+	ID          int       `gorm:"column:id;primary_key" json:"id"`
+	FileID      string    `gorm:"column:fileid" json:"fileid"`
+	FileName    string    `gorm:"column:filename" json:"filename"`
+	Version     int       `gorm:"column:version" json:"version"`
+	ContentType string    `gorm:"column:content_type" json:"content_type"`
+	Size        int       `gorm:"column:size" json:"size"`
+	CreateTime  time.Time `gorm:"column:create_time" json:"create_time"`
+	Display     bool      `gorm:"column:display" json:"display"`
+}
+
+// TableName sets the insert table name for this struct type
+func (m *Media) TableName() string {
+	return "media"
+}
+
+func (self *Media) GetFilePath() string {
+	conf := config.Get()
+	filePath := path.Join(conf.MediaFolder, self.FileName)
+	return filePath
+}
+
+func (self *Media) DeleteLocalFile () error {
+	filepath := self.GetFilePath()
+	return os.Remove(filepath)
+}
+
+func GetMedias (c interface{}, p* common.Pagination) ([] Media, error) {
+	var medias [] Media
+	err := common.DB.Where(c).Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&medias).Error
+	return medias, err
+}
+
+func GetMedia (c interface{}) (Media, error) {
+	var media Media
+	err := common.DB.Where(c).First(&media).Error
+	return media, err
+}
+
