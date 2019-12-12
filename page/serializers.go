@@ -187,5 +187,14 @@ func (self *LinkSerializer) getSidebarResponse () *LinkResponse {
 }
 
 
-
+func (self *LinkSerializer) FullResponse () *LinkResponse {
+	return &LinkResponse{
+		ID: self.ID,
+		Name: self.Name,
+		Href: self.Href,
+		Description: self.Description,
+		CreateTime: self.CreateTime,
+		Display: self.Display,
+	}
+}
 

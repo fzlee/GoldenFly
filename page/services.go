@@ -194,3 +194,22 @@ func TransactionUpdatePageTags (page *Page) error {
 
 	return tx.Commit().Error
 }
+
+
+func CreateLink (v *CreateLinkValidator) error {
+	link := &Link{
+		Name:        v.Name,
+		Href:        v.Href,
+		Description: v.Description,
+		CreateTime:  time.Now(),
+		Display:     false,
+	}
+
+	return common.DB.Create(link).Error
+}
+
+
+func UpdateLink (link *Link, v *UpdateLinkValidator) {
+	link.Display = *v.Display
+	common.DB.Save(link)
+}

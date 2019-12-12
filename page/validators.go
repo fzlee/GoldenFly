@@ -15,16 +15,27 @@ type InPlaceValidator struct {
 
 
 type SavePageValidator struct {
-	PageID        *int      `json:"id", "binding:omitempty"`
-	AllowComment  bool      `json:"allow_comment", "binding:required"`
-	AllowVisit    bool      `json:"allow_visit", "binding:required"`
-	IsOriginal    bool      `json:"is_original", "binding:required"`
-	NeedKey       bool      `json:"need_key", "binding:required"`
-	Content       string    `json:"content", "binding:min:1"`
-	Editor        string    `json:"editor", "binding:oneof=markdown html"`
-	MetaContent   string    `json:"metacontent", "binding:required"`
-	Password      string    `json:"password", "binding:min=1"`
-	Tags          string    `json:"tags", "binding:min=1"`
-	Title         string    `json:"title", "binding:min=1"`
-	URL           string    `json:"url", "binding:min=1"`
+	PageID        *int      `json:"id" binding:"omitempty"`
+	AllowComment  bool      `json:"allow_comment" binding:"required"`
+	AllowVisit    bool      `json:"allow_visit" binding:"required"`
+	IsOriginal    bool      `json:"is_original" binding:"required"`
+	NeedKey       bool      `json:"need_key" binding:"required"`
+	Content       string    `json:"content" binding:"min:1"`
+	Editor        string    `json:"editor" binding:"oneof=markdown html"`
+	MetaContent   string    `json:"metacontent" binding:"required"`
+	Password      string    `json:"password" binding:"min=1"`
+	Tags          string    `json:"tags" binding:"min=1"`
+	Title         string    `json:"title" binding:"min=1"`
+	URL           string    `json:"url" binding:"min=1"`
+}
+
+
+type CreateLinkValidator struct {
+	Description 	string 		`json:"description" binding:"required,min=1"`
+	Href            string 		`json:"href" binding:"required,url"`
+	Name            string 		`json:"name" binding:"required,min=1"`
+}
+
+type UpdateLinkValidator struct {
+	Display			*bool		`json:"display" binding:"required"`
 }

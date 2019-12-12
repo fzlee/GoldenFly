@@ -205,3 +205,84 @@ func DeleteComment (c *gin.Context) {
 	common.DB.Delete(&comment)
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
+
+
+func ListLinks(c *gin.Context) {
+	pagination := common.ParsePageAndSize(c)
+	links , _ := GetLinks(&Link{}, &pagination)
+
+	results := make([] *LinkResponse, len(links))
+	for i := range links{
+		results[i] = (&LinkSerializer{c, &links[i]}).FullResponse()
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": results})
+}
+
+
+func CreateLinkView(c *gin.Context) {
+	var v CreateLinkValidator
+	var err error
+	if err = c.BindJSON(&v); err != nil {
+		common.ResponseWithValidation(c, err)
+		return
+	}
+
+	err = CreateLink(&v)
+	if err != nil {
+		common.ResponseWithPanic(c, err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
+func DeleteLinkView (c *gin.Context) {
+	var err error
+	var id int
+	id, err = strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	var link Link
+	link, err = GetLink(&Link{ID: id})
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	err = common.DB.Delete(&link).Error
+	if err != nil {
+		common.ResponseWithPanic(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
+
+func UpdateLinkView (c *gin.Context) {
+	var err error
+	var id int
+	id, err = strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	var link Link
+	link, err = GetLink(&Link{ID: id})
+	if err != nil {
+		common.ResponseWithCode(c, common.CodeNotFound)
+		return
+	}
+
+	var v UpdateLinkValidator
+	if err = c.BindJSON(&v); err !=nil {
+		common.ResponseWithPanic(c, err)
+	}
+
+	UpdateLink(&link, &v)
+	c.JSON(http.StatusOK, gin.H{"success": true})
+
+}
