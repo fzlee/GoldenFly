@@ -28,4 +28,5 @@ func RegisterRouter(router *gin.RouterGroup) {
 	adminGroup.PUT("/links/:id/", UpdateLinkView)
 	adminGroup.GET("/medias/", ListMediasView)
 	adminGroup.DELETE("/medias/:id/", DeleteMediaView)
+	adminGroup.POST("/medias/upload/", UploadMediaView)
 }

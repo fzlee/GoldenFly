@@ -214,9 +214,9 @@ func GetMedias (c interface{}, p* common.Pagination) ([] Media, error) {
 	return medias, err
 }
 
-func GetMedia (c interface{}) (Media, error) {
+func GetMedia (c interface{}, order string) (Media, error) {
 	var media Media
-	err := common.DB.Where(c).First(&media).Error
+	err := common.DB.Where(c).Order(order).First(&media).Error
 	return media, err
 }
 

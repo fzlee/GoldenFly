@@ -310,7 +310,7 @@ func DeleteMediaView (c *gin.Context) {
 	}
 
 	var media Media
-	media, err = GetMedia(&Media{ID: id})
+	media, err = GetMedia(&Media{ID: id}, "")
 	if err != nil {
 		common.ResponseWithCode(c, common.CodeNotFound)
 		return
@@ -319,4 +319,19 @@ func DeleteMediaView (c *gin.Context) {
 	media.DeleteLocalFile()
 	err = common.DB.Delete(&media).Error
 	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
+
+func UploadMediaView (c *gin.Context) {
+	form, _ := c.MultipartForm()
+	files := form.File["file"]
+	file := files[0]
+	media, err := CreateMedia(file)
+	if err == nil {
+		c.SaveUploadedFile(file, media.GetFilePath())
+		c.JSON(http.StatusOK, gin.H{"success": true})
+		return
+	}
+
+	common.ResponseWithCode(c, common.CodeFileUploadFailed)
 }

@@ -34,12 +34,12 @@ func Login(c *gin.Context) {
 	user, err := GetUser(&User{Username: loginValidator.Username})
 
 	if err != nil {
-		common.ResponseWithCode(c, common.LoginFailed)
+		common.ResponseWithCode(c, common.CodeLoginFailed)
 		return
 	}
 
 	if !user.CheckPassword(loginValidator.Password) {
-		common.ResponseWithCode(c, common.LoginFailed)
+		common.ResponseWithCode(c, common.CodeLoginFailed)
 		return
 	}
 	serializer := UserSerializer{c, user}

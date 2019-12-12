@@ -5,6 +5,7 @@ import (
 	"golden_fly/common"
 	"golden_fly/config"
 	"gopkg.in/russross/blackfriday.v2"
+	"mime/multipart"
 	"regexp"
 	"strings"
 	"time"
@@ -212,4 +213,27 @@ func CreateLink (v *CreateLinkValidator) error {
 func UpdateLink (link *Link, v *UpdateLinkValidator) {
 	link.Display = *v.Display
 	common.DB.Save(link)
+}
+
+
+func CreateMedia (header *multipart.FileHeader) (*Media, error){
+	media := &Media{
+		FileID: common.RandomString(20),
+		FileName: header.Filename,
+		Size: int(header.Size),
+		Display: true,
+		CreateTime: time.Now(),
+		ContentType: header.Header["Content-Type"][0],
+	}
+
+	oldMedia, err := GetMedia(&Media{FileName: media.FileName}, "id desc")
+	if err != nil {
+		media.Version = 1
+	} else {
+		media.Version = oldMedia.Version + 1
+		media.ID = oldMedia.ID
+	}
+
+	err = common.DB.Save(media).Error
+	return media, err
 }

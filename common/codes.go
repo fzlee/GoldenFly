@@ -6,7 +6,8 @@ const (
 	CodeNotFound         = 1003
 	CodeParameterMissing = 1004
 
-	LoginFailed = 2001
+	CodeLoginFailed = 2001
+	CodeFileUploadFailed = 3001
 )
 var ErrorCodes = map[int]string{
 	1001: "Unauthorized",
@@ -14,4 +15,5 @@ var ErrorCodes = map[int]string{
 	1003: "object not found",
 	1004: "certain parameters are invalid or missing",
 	2001: "Invalid email/password",
+	3001: "File uploading failed",
 }
