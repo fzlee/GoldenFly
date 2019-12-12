@@ -16,7 +16,7 @@ type PageResponse struct {
     ContentDigest 	string			`json:"content_digest,omitempty"`
     Content			string			`json:"content,omitempty"`
     Keywords 		string			`json:"keywords"`
-    Metacontent 	string   		`json:metacontent,omitempty`
+    Metacontent 	string   		`json:"metacontent,omitempty"`
     CreateTime		* time.Time			`json:"create_time"`
     UpdateTime		* time.Time			`json:"update_time"`
     NeedKey			bool			`json:"need_key"`
@@ -64,11 +64,13 @@ func (self * PageSerializer) PreviewResponse() *PageResponse {
 
 	if !self.NeedKey {
 		r.Preview = self.ContentDigest
+	} else {
+		r.Preview = ""
 	}
 	return r
 }
 
-func (self * PageSerializer) MetaResponse() *PageResponse {
+func (self * PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
 	r :=  &PageResponse{
 		URL:           self.URL,
 		Title:         self.Title,
@@ -77,10 +79,14 @@ func (self * PageSerializer) MetaResponse() *PageResponse {
 		NeedKey:       self.NeedKey,
 		AllowComment:  self.AllowComment,
 		IsOriginal:	   self.IsOriginal,
-		Content:       self.Content,
 	}
 
-	r.Content = self.Content
+	if self.NeedKey && !enforceContent{
+		r.Content = ""
+	} else {
+		r.Content = self.Content
+	}
+
 	return r
 }
 

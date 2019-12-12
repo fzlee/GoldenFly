@@ -44,9 +44,33 @@ func RetrievePageMeta (c *gin.Context) {
 	if err != nil {
 		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
 	}
-	result := (&PageSerializer{c, &page}).MetaResponse()
+	result := (&PageSerializer{c, &page}).MetaResponse(false)
 	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 
+}
+
+func GetPageByPassword (c *gin.Context) {
+	var page Page
+	var err error
+	url :=  c.Param("url")
+	page, err = GetPage(&Page{URL: url})
+	if err != nil {
+		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
+	}
+
+	var v PagePasswordValidator
+	if err = c.BindJSON(&v); err != nil {
+		common.ResponseWithPanic(c, err)
+		return
+	}
+
+	if v.Password != page.Password {
+		common.ResponseWithCode(c, common.CodeInvalidPassword)
+		return
+	}
+
+	result := (&PageSerializer{c, &page}).MetaResponse(true)
+	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
 
 func RetrievePage(c *gin.Context) {

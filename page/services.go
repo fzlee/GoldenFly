@@ -107,12 +107,12 @@ func UpdateOrCreatePage(v *SavePageValidator, page *Page) error{
 	page.Title = v.Title
 	page.Content = v.Content
 	page.MetaContent = v.MetaContent
-	page.NeedKey = v.NeedKey
+	page.NeedKey = *v.NeedKey
 	page.Tags = v.Tags
 	page.Editor = v.Editor
-	page.AllowComment = v.AllowComment
-	page.AllowVisit = v.AllowVisit
-	page.IsOriginal = v.IsOriginal
+	page.AllowComment = *v.AllowComment
+	page.AllowVisit = *v.AllowVisit
+	page.IsOriginal = *v.IsOriginal
 
 	if page.NeedKey {
 		page.Password = v.Password

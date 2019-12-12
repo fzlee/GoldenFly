@@ -14,13 +14,17 @@ type InPlaceValidator struct {
 }
 
 
+type PagePasswordValidator struct {
+	Password string `json:"password", binding:"required"`
+}
+
 type SavePageValidator struct {
 	PageID        *int      `json:"id" binding:"omitempty"`
-	AllowComment  bool      `json:"allow_comment" binding:"required"`
-	AllowVisit    bool      `json:"allow_visit" binding:"required"`
-	IsOriginal    bool      `json:"is_original" binding:"required"`
-	NeedKey       bool      `json:"need_key" binding:"required"`
-	Content       string    `json:"content" binding:"min:1"`
+	AllowComment  *bool      `json:"allow_comment" binding:"required"`
+	AllowVisit    *bool      `json:"allow_visit" binding:"required"`
+	IsOriginal    *bool      `json:"is_original" binding:"required"`
+	NeedKey       *bool      `json:"need_key" binding:"required"`
+	Content       string    `json:"content" binding:"min=1"`
 	Editor        string    `json:"editor" binding:"oneof=markdown html"`
 	MetaContent   string    `json:"metacontent" binding:"required"`
 	Password      string    `json:"password" binding:"min=1"`
