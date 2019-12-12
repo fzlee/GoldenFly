@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>/</loc>
+        <lastmod>2019-09-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    {{range .Pages}}
+        <url>
+            <loc>{{.URL}}</loc>
+            <lastmod>{{.CreateTime.Format "2006-01-02"}}</lastmod>
+            <changefreq>monthly</changefreq>
+            <priority>0.7</priority>
+        </url>
+     {{end}}
+</urlset>

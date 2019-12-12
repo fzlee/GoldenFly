@@ -36,9 +36,14 @@ func initRouters (engine *gin.Engine){
 	page.RegisterRouter(router)
 
 	// sitemap
-	router.GET("/sitemap.xml", user.GenerateSitemap)
+	router.GET("/sitemap.tmpl", page.GenerateSitemap)
 	// static folder
 	engine.StaticFS("/media", gin.Dir(conf.MediaFolder, false))
+}
+
+func initTemplates (engine *gin.Engine) {
+	engine.LoadHTMLGlob("templates/*")
+	page.RegisterTemplateViews(engine)
 }
 
 func initSession (engine *gin.Engine) {
@@ -53,5 +58,6 @@ func main() {
 	engine := gin.Default()
 	initSession(engine)
 	initRouters(engine)
+	initTemplates(engine)
 	engine.Run(config.Get().Addr)
 }

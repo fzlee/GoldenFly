@@ -90,6 +90,15 @@ func (self * PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
 	return r
 }
 
+func (self * PageSerializer) SiteMapResponse(c *gin.Context) *PageResponse {
+	prefix := "https://" + c.Request.Host
+	r := &PageResponse{
+		URL: prefix + "/articles/" + self.URL,
+		CreateTime: self.CreateTime,
+	}
+	return r
+}
+
 
 type CommentSerializer struct {
 	c *gin.Context

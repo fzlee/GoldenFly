@@ -359,3 +359,18 @@ func UploadMediaView (c *gin.Context) {
 
 	common.ResponseWithCode(c, common.CodeFileUploadFailed)
 }
+
+
+func GenerateSitemap (c *gin.Context) {
+
+	pages, _ := GetPages(&Page{AllowVisit: true, NeedKey: false}, &common.Pagination{Page: 1, Size: 100000})
+
+	results := make([]*PageResponse, len(pages))
+	for i := range results {
+		results[i] = (&PageSerializer{c, &pages[i]}).SiteMapResponse(c)
+	}
+
+	c.HTML(http.StatusOK, "sitemap.tmpl", gin.H{
+		"Pages": results,
+	})
+}
