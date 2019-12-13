@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func ListPages (c *gin.Context) {
+func ListPagesView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	pages, _ := GetPages(&Page{}, &pagination)
 
@@ -20,7 +20,7 @@ func ListPages (c *gin.Context) {
 }
 
 
-func DeletePage (c *gin.Context) {
+func DeletePageView(c *gin.Context) {
 	var err error
 	var page Page
 	url := c.Param("url")
@@ -38,7 +38,7 @@ func DeletePage (c *gin.Context) {
 }
 
 
-func RetrievePageMeta (c *gin.Context) {
+func RetrievePageMetaView(c *gin.Context) {
 	url :=  c.Param("url")
 	page, err := GetPage(&Page{URL: url})
 	if err != nil {
@@ -49,7 +49,7 @@ func RetrievePageMeta (c *gin.Context) {
 
 }
 
-func GetPageByPassword (c *gin.Context) {
+func GetPageByPasswordView(c *gin.Context) {
 	var page Page
 	var err error
 	url :=  c.Param("url")
@@ -73,7 +73,7 @@ func GetPageByPassword (c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
 
-func RetrievePage(c *gin.Context) {
+func RetrievePageView(c *gin.Context) {
 	url := c.Param("url")
 
 	page, err := GetPage(&Page{URL: url})
@@ -84,7 +84,7 @@ func RetrievePage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
 
-func PagesInPlace(c *gin.Context) {
+func PagesInPlaceView(c *gin.Context) {
 	var v InPlaceValidator
 	if err := c.BindJSON(&v); err != nil {
 		common.ResponseWithValidation(c, err)
@@ -113,7 +113,7 @@ func PagesPreview(c * gin.Context) {
 }
 
 
-func PageComments (c *gin.Context) {
+func PageCommentsView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	url:= c.Param("url")
 	page, err := GetPage(&Page{URL: url})
@@ -132,7 +132,7 @@ func PageComments (c *gin.Context) {
 }
 
 
-func SavePage (c *gin.Context) {
+func SavePageView(c *gin.Context) {
 
 	var err error
 	var v SavePageValidator
@@ -155,13 +155,13 @@ func SavePage (c *gin.Context) {
 
 }
 
-func PageSideBar (c *gin.Context) {
+func PageSideBarView(c *gin.Context) {
 	result := GenerateSideBar(c)
 	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
 
 
-func PagesSearch(c *gin.Context) {
+func PagesSearchView(c *gin.Context) {
 	tagname := c.DefaultQuery("tagname", "")
 	if tagname == "" {
 		c.JSON(http.StatusOK, gin.H{"success": true, "data": make([] string, 0)})
@@ -209,7 +209,7 @@ func CreateCommentView(c *gin.Context) {
 }
 
 
-func ListComments(c *gin.Context) {
+func ListCommentsView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	comments, _ := GetComments(&Comment{}, &pagination, "id desc")
 
@@ -222,7 +222,7 @@ func ListComments(c *gin.Context) {
 }
 
 
-func DeleteComment (c *gin.Context) {
+func DeleteCommentView(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	comment, _ := GetComment(&Comment{ID: id})
 
@@ -361,7 +361,7 @@ func UploadMediaView (c *gin.Context) {
 }
 
 
-func GenerateSitemap (c *gin.Context) {
+func GenerateSitemapView(c *gin.Context) {
 
 	pages, _ := GetPages(&Page{AllowVisit: true, NeedKey: false}, &common.Pagination{Page: 1, Size: 100000})
 

@@ -80,7 +80,7 @@ type Comment struct {
 	IP              string      `gorm:"column:ip" json:"ip"`
 	Website         string      `gorm:"column:website" json:"website"`
 	PageID          int         `gorm:"column:page_id" json:"page_id"`
-	ParentCommentID * int       `gorm:"column:parent_comment_id" json:"parent_comment_id" sql:"type:bigint REFFERENCES comment(id) ON DELETE CASCADE"`
+	ParentCommentID * int       `gorm:"column:parent_comment_id" json:"parent_comment_id" sql:"type:int"`
 }
 
 // TableName sets the insert table name for this struct type

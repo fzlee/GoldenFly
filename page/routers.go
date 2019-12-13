@@ -6,23 +6,23 @@ import (
 )
 
 func RegisterRouter(router *gin.RouterGroup) {
-	router.GET("/articles/", ListPages)
+	router.GET("/articles/", ListPagesView)
 	router.GET("/articles-preview/", PagesPreview)
-	router.GET("/articles-sidebar/", PageSideBar)
-	router.GET("/articles-search/", PagesSearch)
-	router.POST("/articles-inplace/", PagesInPlace)
-	router.GET("/articles/:url/meta/", RetrievePageMeta)
-	router.POST("/articles/:url/meta/", GetPageByPassword)
-	router.GET("/articles/:url/comments/", PageComments)
+	router.GET("/articles-sidebar/", PageSideBarView)
+	router.GET("/articles-search/", PagesSearchView)
+	router.POST("/articles-inplace/", PagesInPlaceView)
+	router.GET("/articles/:url/meta/", RetrievePageMetaView)
+	router.POST("/articles/:url/meta/", GetPageByPasswordView)
+	router.GET("/articles/:url/comments/", PageCommentsView)
 	router.POST("/articles/:url/comments/", CreateCommentView)
 
 	adminGroup := router.Group("/")
 	adminGroup.Use(user.AdminRequired)
-	adminGroup.GET("/articles/:url/", RetrievePage)
-	adminGroup.DELETE("/articles/:url/", DeletePage)
-	adminGroup.PUT("/articles/save/", SavePage)
-	adminGroup.GET("/comments/", ListComments)
-	adminGroup.DELETE("/comments/:id/", DeleteComment)
+	adminGroup.GET("/articles/:url/", RetrievePageView)
+	adminGroup.DELETE("/articles/:url/", DeletePageView)
+	adminGroup.PUT("/articles/save/", SavePageView)
+	adminGroup.GET("/comments/", ListCommentsView)
+	adminGroup.DELETE("/comments/:id/", DeleteCommentView)
 	adminGroup.GET("/links/", ListLinksView)
 	adminGroup.POST("/links/", CreateLinkView)
 	adminGroup.DELETE("/links/:id/", DeleteLinkView)
@@ -34,5 +34,5 @@ func RegisterRouter(router *gin.RouterGroup) {
 
 
 func RegisterTemplateViews(engine *gin.Engine) {
-	engine.GET("/sitemap.xml", GenerateSitemap)
+	engine.GET("/sitemap.xml", GenerateSitemapView)
 }

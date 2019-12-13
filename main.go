@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -36,7 +37,7 @@ func initRouters (engine *gin.Engine){
 	page.RegisterRouter(router)
 
 	// sitemap
-	router.GET("/sitemap.tmpl", page.GenerateSitemap)
+	router.GET("/sitemap.tmpl", page.GenerateSitemapView)
 	// static folder
 	engine.StaticFS("/media", gin.Dir(conf.MediaFolder, false))
 }
@@ -51,6 +52,10 @@ func initSession (engine *gin.Engine) {
 	engine.Use(sessions.Sessions(config.SessionUserKey, store))
 }
 
+func initCLI () {
+
+}
+
 func main() {
 	initConfig()
 	db := initDatabase()
@@ -59,5 +64,23 @@ func main() {
 	initSession(engine)
 	initRouters(engine)
 	initTemplates(engine)
-	engine.Run(config.Get().Addr)
+
+	// command line interface
+	var command string
+	flag.StringVar(&command, "command", "xxx", "runserver/migrate/createuser")
+	flag.Parse()
+	fmt.Println(command)
+	fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+	if command == "runserver" {
+		engine.Run(config.Get().Addr)
+	} else if command == "migrate" {
+		fmt.Print("makemigrations")
+		user.MakeMigrations()
+		page.MakeMigrations()
+	} else if command == "createuser" {
+		user.CreateUserViaCommandLine()
+	} else if command == "changepassword" {
+		user.ChangePasswordViaCommandLine()
+	}
 }

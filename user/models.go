@@ -19,7 +19,7 @@ var (
 type User struct {
 	ID        uint       `gorm:"column:id;primary_key" json:"id"`
 	Password  string    `gorm:"column:password" json:"password"`
-	LastLogin null.Time `gorm:"column:last_login" json:"last_login"`
+	LastLogin time.Time `gorm:"column:last_login" json:"last_login"`
 	UID       string    `gorm:"column:uid" json:"uid"`
 	Username  string    `gorm:"column:username" json:"username"`
 	Email     string    `gorm:"column:email" json:"email"`
@@ -65,6 +65,12 @@ func (self *User) HashPassword(password string) string {
 	} else {
 		return ""
 	}
+}
+
+
+func (self *User) SetPassword (password string) error {
+	self.Password = self.HashPassword(password)
+	return common.DB.Save(self).Error
 }
 
 func (self *User) GetOrExtendToken () AuthToken {
