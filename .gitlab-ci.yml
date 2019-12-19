@@ -9,8 +9,8 @@ cache:
     - /go/src/google.golang.org
     - /go/src/gopkg.in
 
- artifacts:
-    paths:
+artifacts:
+  paths:
     - ./golden_fly
 
 
