@@ -26,9 +26,9 @@ type SavePageValidator struct {
 	NeedKey       *bool      `json:"need_key" binding:"required"`
 	Content       string    `json:"content" binding:"min=1"`
 	Editor        string    `json:"editor" binding:"oneof=markdown html"`
-	MetaContent   string    `json:"metacontent" binding:"required"`
-	Password      string    `json:"password" binding:"min=1"`
-	Tags          string    `json:"tags" binding:"min=1"`
+	MetaContent   string    `json:"metacontent" binding:"min=0"`
+	Password      string    `json:"password" binding:"min=0"`
+	Tags          string    `json:"tags" binding:"min=0"`
 	Title         string    `json:"title" binding:"min=1"`
 	URL           string    `json:"url" binding:"min=1"`
 }
