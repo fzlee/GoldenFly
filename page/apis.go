@@ -144,7 +144,7 @@ func SavePageView(c *gin.Context) {
 		return
 	}
 	var page * Page
-	&, gesif page, err = UpdateOrCreatePage(&v); err != nil {
+	if page, err = UpdateOrCreatePage(&v); err != nil {
 		common.ResponseWithValidation(c, err)
 		return
 	}
