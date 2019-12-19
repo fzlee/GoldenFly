@@ -44,6 +44,7 @@ prod-deploy:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - scp ./golden_fly $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
+    - rsync -avz ./templates $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
   only:
     - prod
 
