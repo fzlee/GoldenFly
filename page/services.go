@@ -131,6 +131,7 @@ func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
 	}
 	r, _ := regexp.Compile("<.*?>")
 	page.ContentDigest = r.ReplaceAllString(page.HTML, "")
+	page.ContentDigest = page.ContentDigest[:common.MinINT(len(page.ContentDigest), 200)]
 	// handle time
 	now := time.Now()
 	page.UpdateTime = &now
