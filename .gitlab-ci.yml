@@ -17,7 +17,6 @@ dep:
   stage: dep
   image: golang:1.13.4
   before_script:
-    - apk add --no-cache curl git
     - curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 -o /go/bin/dep
     - chmod +x /go/bin/dep
     - *inject-gopath
