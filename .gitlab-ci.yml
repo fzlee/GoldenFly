@@ -43,7 +43,7 @@ prod-deploy:
     - echo "$PROD_SERVERS_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - ssh $PROD_USERNAME@$PROD_HOST: "rm $PROD_FOLDER/golden_fly"
+    - ssh $PROD_USERNAME@$PROD_HOST "rm $PROD_FOLDER/golden_fly"
     - scp ./golden_fly $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
     - rsync -avz ./templates $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
     - ssh $PROD_USERNAME@$PROD_HOST "systemctl --user restart goldenfly"
