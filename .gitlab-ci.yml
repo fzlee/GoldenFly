@@ -44,7 +44,7 @@ build:
 
 
 prod-deploy:
-  stage: Deploy
+  stage: deploy
   image: instrumentisto/rsync-ssh:latest
   environment:
     name: prod
