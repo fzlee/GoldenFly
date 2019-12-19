@@ -10,6 +10,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"golden_fly/common"
 	"golden_fly/config"
+	"golden_fly/other"
 	"golden_fly/page"
 	"golden_fly/user"
 )
@@ -32,20 +33,14 @@ func initDatabase() *gorm.DB {
 }
 
 func initRouters (engine *gin.Engine){
-	conf := config.Get()
 	router := engine.Group("/api")
 	user.RegisterRouter(router)
 	page.RegisterRouter(router)
-
-	// sitemap
-	router.GET("/sitemap.tmpl", page.GenerateSitemapView)
-	// static folder
-	engine.StaticFS("/media", gin.Dir(conf.MediaFolder, false))
+	other.RegisterRouter(engine)
 }
 
 func initTemplates (engine *gin.Engine) {
 	engine.LoadHTMLGlob("templates/*")
-	page.RegisterTemplateViews(engine)
 }
 
 func initSession (engine *gin.Engine) {
@@ -53,9 +48,6 @@ func initSession (engine *gin.Engine) {
 	engine.Use(sessions.Sessions(config.SessionUserKey, store))
 }
 
-func initCLI () {
-
-}
 
 func main() {
 	initConfig()
@@ -65,7 +57,7 @@ func main() {
 	engine.Use(location.Default())
 	initSession(engine)
 	initRouters(engine)
-	initTemplates(engine)
+	// initTemplates(engine)
 
 	// command line interface
 	var command string

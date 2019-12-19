@@ -1,11 +1,12 @@
 package page
 
 import (
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"time"
 )
 type PageSerializer struct {
-	c *gin.Context
+	C *gin.Context
 	* Page
 }
 
@@ -91,7 +92,8 @@ func (self * PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
 }
 
 func (self * PageSerializer) SiteMapResponse(c *gin.Context) *PageResponse {
-	prefix := "https://" + c.Request.Host
+	uri := location.Get(c)
+	prefix := uri.Scheme + "://" + uri.Host
 	r := &PageResponse{
 		URL: prefix + "/articles/" + self.URL,
 		CreateTime: self.CreateTime,
@@ -99,6 +101,18 @@ func (self * PageSerializer) SiteMapResponse(c *gin.Context) *PageResponse {
 	return r
 }
 
+
+func (self * PageSerializer) RSSResponse(c *gin.Context) *PageResponse {
+	uri := location.Get(c)
+	prefix := uri.Scheme + "://" + uri.Host
+	r := &PageResponse{
+		URL: prefix + "/articles/" + self.URL,
+		CreateTime: self.CreateTime,
+		HTML: self.HTML,
+		Title: self.Title,
+	}
+	return r
+}
 
 type CommentSerializer struct {
 	c *gin.Context

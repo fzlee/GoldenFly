@@ -31,8 +31,3 @@ func RegisterRouter(router *gin.RouterGroup) {
 	adminGroup.DELETE("/medias/:id/", DeleteMediaView)
 	adminGroup.POST("/medias/upload/", UploadMediaView)
 }
-
-
-func RegisterTemplateViews(engine *gin.Engine) {
-	engine.GET("/sitemap.xml", GenerateSitemapView)
-}

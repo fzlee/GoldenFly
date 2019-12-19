@@ -24,6 +24,10 @@ type Config struct {
 	EmailSMTPUsername   string      `yaml:"email_smtp_username"`
 	EmailSMTPPassword   string      `yaml:"email_smtp_password"`
 	EmailSMTPEmail      string      `yaml:"email_admin_email"`
+	SiteName            string      `yaml:"site_name"`
+	SiteURL             string      `yaml:"site_url"`
+	SiteDescription     string      `yaml:"site_description"`
+	SiteAuthor          string      `yaml:"site_author"`
 }
 
 const (
