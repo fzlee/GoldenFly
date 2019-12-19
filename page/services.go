@@ -96,8 +96,9 @@ func TransactionDeletePage (page *Page) error {
 }
 
 
-func UpdateOrCreatePage(v *SavePageValidator, page *Page) error{
+func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
 	var err error
+	var page *Page
 	if v.PageID != nil {
 		page2, _ := GetPage(&Page{ID: *v.PageID})
 		page = &page2
@@ -138,7 +139,7 @@ func UpdateOrCreatePage(v *SavePageValidator, page *Page) error{
 	}
 	err = common.DB.Save(page).Error
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// handle tags
@@ -151,9 +152,9 @@ func UpdateOrCreatePage(v *SavePageValidator, page *Page) error{
 
 	err = common.DB.Save(page).Error
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return TransactionUpdatePageTags(page)
+	return page, TransactionUpdatePageTags(page)
 }
 
 

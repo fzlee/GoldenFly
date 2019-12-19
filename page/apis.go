@@ -143,13 +143,13 @@ func SavePageView(c *gin.Context) {
 		common.ResponseWithValidation(c, err)
 		return
 	}
-	var page Page
-	if err = UpdateOrCreatePage(&v, &page); err != nil {
+	var page * Page
+	&, gesif page, err = UpdateOrCreatePage(&v); err != nil {
 		common.ResponseWithValidation(c, err)
 		return
 	}
 
-	s := PageSerializer{c, &page}
+	s := PageSerializer{c, page}
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
