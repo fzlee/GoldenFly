@@ -2,7 +2,6 @@ variables:
   PACKAGE_PATH: /go/src/gitlab.com/hypnoglow/example-go-docker-gitlab
 
 stages:
-  - dep
   - build
   - deploy
 
@@ -15,8 +14,6 @@ stages:
 
 build:
   stage: build
-  dependencies:
-    - dep
   image: golang:1.13.4
   script:
     - env GOOS=linux GOARCH=amd64 go build 
