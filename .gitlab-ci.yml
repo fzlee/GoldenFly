@@ -9,10 +9,6 @@ cache:
     - /go/src/google.golang.org
     - /go/src/gopkg.in
 
-artifacts:
-  paths:
-    - ./golden_fly
-
 
 stages:
   - build
@@ -32,6 +28,9 @@ build:
     - env GOOS=linux GOARCH=amd64 go build 
   only:
     - prod
+  artifacts:
+    paths:
+      - ./golden_fly
 
 
 prod-deploy:
