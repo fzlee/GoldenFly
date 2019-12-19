@@ -9,6 +9,7 @@ const (
 	CodeLoginFailed = 2001
 	CodeFileUploadFailed = 3001
 	CodeInvalidPassword = 3002
+	CodeCommentNotFound = 4001
 )
 var ErrorCodes = map[int]string{
 	1001: "Unauthorized",
@@ -18,4 +19,5 @@ var ErrorCodes = map[int]string{
 	2001: "Invalid email/password",
 	3001: "File uploading failed",
 	3002: "Invalid Password for Article",
+	4001: "parent comment not found",
 }

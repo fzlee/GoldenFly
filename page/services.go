@@ -1,9 +1,11 @@
 package page
 
 import (
+	"crypto/tls"
 	"github.com/gin-gonic/gin"
 	"golden_fly/common"
 	"golden_fly/config"
+	"gopkg.in/gomail.v2"
 	"gopkg.in/russross/blackfriday.v2"
 	"mime/multipart"
 	"regexp"
@@ -236,4 +238,28 @@ func CreateMedia (header *multipart.FileHeader) (*Media, error){
 
 	err = common.DB.Save(media).Error
 	return media, err
+}
+
+
+func SendEmail (to string, subject string, content string) {
+	conf := config.Get()
+	if !conf.SendEmailReply {
+		return
+	}
+
+	d := gomail.NewDialer(
+		conf.EmailSMTPHost,
+		conf.EmailSMTPPort,
+		conf.EmailSMTPUsername,
+		conf.EmailSMTPPassword)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", conf.EmailSMTPUsername)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/plain", content)
+
+	// 异步执行邮件发送
+	go d.DialAndSend(m)
 }

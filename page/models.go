@@ -43,6 +43,10 @@ func (p *Page) TableName() string {
 	return "page"
 }
 
+func (this * Page) GetFullPath (scheme string, host string) string {
+	return scheme + "://" + host + "/" + this.URL
+}
+
 
 func GetPage (condition interface{}) (Page, error){
 	var page Page

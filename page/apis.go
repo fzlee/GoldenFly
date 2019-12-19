@@ -1,8 +1,11 @@
 package page
 
 import (
+	"fmt"
+	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 	"golden_fly/common"
+	"golden_fly/config"
 	"net/http"
 	"strconv"
 )
@@ -182,6 +185,7 @@ func PagesSearchView(c *gin.Context) {
 
 
 func CreateCommentView(c *gin.Context) {
+	var err error
 	url :=  c.Param("url")
 
 	page, err := GetPage(&Page{URL: url})
@@ -190,21 +194,41 @@ func CreateCommentView(c *gin.Context) {
 		return
 	}
 
+	uri := location.Get(c)
+	fullPath := page.GetFullPath(uri.Scheme, uri.Host)
+
 	var v CommentValidator
 	if err := c.BindJSON(&v); err != nil {
 		common.ResponseWithValidation(c, err)
 		return
 	}
 
+	var ParentComment Comment
 	var to string
 	if v.CommentID != nil {
-		comment, err := GetComment(&Comment{ID: *v.CommentID})
+		ParentComment, err = GetComment(&Comment{ID: *v.CommentID})
 		if err == nil {
-			to = comment.Nickname
+			to = ParentComment.Nickname
+		} else {
+			common.ResponseWithCode(c, common.CodeCommentNotFound)
+			return
 		}
 	}
 
 	CreateComment(&v, &to, c.ClientIP(), page.ID)
+
+	subject := "在<<%s>>留言"
+	subject = fmt.Sprintf(subject, page.Title)
+	content := "邮件地址:%s\n网站地址:%s\n评论内容:%s\n文章地址:%s\n"
+	content = fmt.Sprintf(content, v.Email, v.Website, v.Content, fullPath)
+	conf := config.Get()
+
+	if v.CommentID != nil {
+		subject := fmt.Sprintf("%s在<<%s>>回复了您", v.Nickname, page.Title)
+		SendEmail(ParentComment.Email, subject, content)
+	}
+	SendEmail(conf.EmailSMTPEmail, subject, content)
+
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 

@@ -6,7 +6,6 @@ import (
 )
 
 func RegisterRouter(router *gin.RouterGroup) {
-	router.GET("/articles/", ListPagesView)
 	router.GET("/articles-preview/", PagesPreview)
 	router.GET("/articles-sidebar/", PageSideBarView)
 	router.GET("/articles-search/", PagesSearchView)
@@ -18,6 +17,7 @@ func RegisterRouter(router *gin.RouterGroup) {
 
 	adminGroup := router.Group("/")
 	adminGroup.Use(user.AdminRequired)
+	adminGroup.GET("/articles/", ListPagesView)
 	adminGroup.GET("/articles/:url/", RetrievePageView)
 	adminGroup.DELETE("/articles/:url/", DeletePageView)
 	adminGroup.PUT("/articles/save/", SavePageView)

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gin-contrib/location"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -61,16 +62,15 @@ func main() {
 	db := initDatabase()
 	defer db.Close()
 	engine := gin.Default()
+	engine.Use(location.Default())
 	initSession(engine)
 	initRouters(engine)
 	initTemplates(engine)
 
 	// command line interface
 	var command string
-	flag.StringVar(&command, "command", "xxx", "runserver/migrate/createuser")
+	flag.StringVar(&command, "command", "runserver", "runserver/migrate/createuser")
 	flag.Parse()
-	fmt.Println(command)
-	fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxxxx")
 
 	if command == "runserver" {
 		engine.Run(config.Get().Addr)
@@ -82,5 +82,6 @@ func main() {
 		user.CreateUserViaCommandLine()
 	} else if command == "changepassword" {
 		user.ChangePasswordViaCommandLine()
+	} else {
 	}
 }

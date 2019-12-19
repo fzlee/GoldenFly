@@ -18,6 +18,12 @@ type Config struct {
 	BlogCommentCount	int      	`yaml:"blog_comment_count"`
 	DebugMode			bool      	`yaml:"debug_mode"`
 	MediaFolder         string      `yaml:"media_folder"`
+	SendEmailReply      bool        `yaml:"send_email_reply"`
+	EmailSMTPHost       string      `yaml:"email_smtp_host"`
+	EmailSMTPPort       int         `yaml:"email_smtp_port"`
+	EmailSMTPUsername   string      `yaml:"email_smtp_username"`
+	EmailSMTPPassword   string      `yaml:"email_smtp_password"`
+	EmailSMTPEmail      string      `yaml:"email_admin_email"`
 }
 
 const (

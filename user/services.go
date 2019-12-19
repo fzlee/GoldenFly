@@ -73,10 +73,11 @@ func CreateUserViaCommandLine () {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Username: ")
 	Username, _ := reader.ReadString('\n')
+	Username = strings.Trim(Username, "\n")
 
-	fmt.Print("Enter Password: ")
+	fmt.Println("Enter Password: ")
 	bPassword1, _ := terminal.ReadPassword(int(syscall.Stdin))
-	fmt.Print("Repeat Password: ")
+	fmt.Println("Repeat Password: ")
 	bPassword2 , _ := terminal.ReadPassword(int(syscall.Stdin))
 
 	if string(bPassword1) != string(bPassword2) {
@@ -87,7 +88,7 @@ func CreateUserViaCommandLine () {
 	password := string(bPassword1)
 	user, err := GetUser(&User{Username: Username})
 	if err == nil {
-		fmt.Println("username is in use")
+		fmt.Println("Username is in use")
 	}
 
 	now := time.Now()
@@ -100,6 +101,6 @@ func CreateUserViaCommandLine () {
 		UpdatedAt: now,
 	}
 	user.SetPassword(password)
-	common.DB.Save(user)
+	common.DB.Save(&user)
 	fmt.Println("Done")
 }
