@@ -31,7 +31,7 @@ func generateSidebarAnnouncement() *gin.H{
 
 	return &gin.H{
 		"url": page.URL,
-		"content": page.ContentDigest[:common.MinINT(len(page.ContentDigest), 200)],
+		"content": page.ContentDigest,
 	}
 }
 
@@ -131,7 +131,8 @@ func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
 	}
 	r, _ := regexp.Compile("<.*?>")
 	page.ContentDigest = r.ReplaceAllString(page.HTML, "")
-	page.ContentDigest = page.ContentDigest[:common.MinINT(len(page.ContentDigest), 200)]
+	utf8String := []rune(page.ContentDigest)
+	page.ContentDigest = string(utf8String[:common.MinINT(len(utf8String), 200)])
 	// handle time
 	now := time.Now()
 	page.UpdateTime = &now
