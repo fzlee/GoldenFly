@@ -32,7 +32,7 @@ prod-deploy:
     - echo "$PROD_SERVERS_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - scp -avz ./golden_fly $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
+    - scp ./golden_fly $PROD_USERNAME@$PROD_HOST:$PROD_FOLDER
   only:
     - prod
 
