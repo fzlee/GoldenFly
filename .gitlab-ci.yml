@@ -1,6 +1,19 @@
 variables:
   PACKAGE_PATH: /go/src/gitlab.com/hypnoglow/example-go-docker-gitlab
 
+cache:
+  paths:
+    - /apt-cache
+    - /go/src/github.com
+    - /go/src/golang.org
+    - /go/src/google.golang.org
+    - /go/src/gopkg.in
+
+ artifacts:
+    paths:
+    - ./golden_fly
+
+
 stages:
   - build
   - deploy
@@ -27,7 +40,6 @@ prod-deploy:
   environment:
     name: prod
   script:
-    - 'which ssh-agent || ( sudo apt-get install -qq openssh-client )'
     - eval $(ssh-agent -s)
     - echo "$PROD_SERVERS_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
