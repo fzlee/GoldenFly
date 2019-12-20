@@ -1,6 +1,6 @@
 ### Goldenfly
 
-gin based blog web service
+gin based blog web service, hosted at [https://ifconfiger.com](https://ifconfiger.com)
 
 
 ### Installation
