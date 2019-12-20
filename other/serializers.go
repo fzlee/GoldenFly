@@ -31,7 +31,7 @@ func GenerateRSS(pages *[] page.Page) (string, error){
 			Title:       page.Title,
 			Link:        &feeds.Link{Href: url},
 			Description: page.Title,
-			Id:          page.URL,
+			Id:          url,
 			Updated:     *page.UpdateTime,
 			Created:     *page.CreateTime,
 			Content:     page.HTML,
