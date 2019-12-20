@@ -105,7 +105,7 @@ func PagesInPlaceView(c *gin.Context) {
 
 func PagesPreview(c * gin.Context) {
 	pagination := common.ParsePageAndSize(c)
-	pages, _ := GetPages(&Page{}, &pagination)
+	pages, _ := GetPages(&Page{AllowVisit:true}, &pagination)
 
 	results := make([] *PageResponse, len(pages))
 	for i := range pages {
