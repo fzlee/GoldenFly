@@ -61,7 +61,7 @@ func main() {
 
 	// command line interface
 	var command string
-	flag.StringVar(&command, "command", "runserver", "runserver/migrate/createuser")
+	flag.StringVar(&command, "command", "runserver", "runserver/migrate/createuser/changepassword")
 	flag.Parse()
 
 	if command == "runserver" {
