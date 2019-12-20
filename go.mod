@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/alexandrevicenzi/unchained v1.2.0
+	github.com/gin-contrib/cache v1.1.0
 	github.com/gin-contrib/location v0.0.1
 	github.com/gin-contrib/sessions v0.0.1
 	github.com/gin-contrib/static v0.0.0-20191128031702-f81c604d8ac2 // indirect

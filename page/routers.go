@@ -1,19 +1,24 @@
 package page
 
 import (
+	"github.com/gin-contrib/cache"
+	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-gonic/gin"
 	"golden_fly/user"
+	"time"
 )
 
-func RegisterRouter(router *gin.RouterGroup) {
+func RegisterRouter(router *gin.RouterGroup, store *persistence.InMemoryStore) {
 	router.GET("/articles-preview/", PagesPreview)
-	router.GET("/articles-sidebar/", PageSideBarView)
 	router.GET("/articles-search/", PagesSearchView)
 	router.POST("/articles-inplace/", PagesInPlaceView)
 	router.GET("/articles/:url/meta/", RetrievePageMetaView)
 	router.POST("/articles/:url/meta/", GetPageByPasswordView)
 	router.GET("/articles/:url/comments/", PageCommentsView)
 	router.POST("/articles/:url/comments/", CreateCommentView)
+
+	// cache
+	router.GET("/articles-sidebar/", cache.CachePage(store, time.Minute * 5, PageSideBarView))
 
 	adminGroup := router.Group("/")
 	adminGroup.Use(user.AdminRequired)

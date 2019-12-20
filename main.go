@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-contrib/location"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -13,6 +14,7 @@ import (
 	"golden_fly/other"
 	"golden_fly/page"
 	"golden_fly/user"
+	"time"
 )
 
 
@@ -34,9 +36,10 @@ func initDatabase() *gorm.DB {
 
 func initRouters (engine *gin.Engine){
 	router := engine.Group("/api")
-	user.RegisterRouter(router)
-	page.RegisterRouter(router)
-	other.RegisterRouter(engine)
+	store := persistence.NewInMemoryStore(time.Second)
+	user.RegisterRouter(router, store)
+	page.RegisterRouter(router, store)
+	other.RegisterRouter(engine, store)
 }
 
 func initTemplates (engine *gin.Engine) {
