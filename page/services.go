@@ -181,7 +181,7 @@ func TransactionUpdatePageTags (page *Page) error {
 		return err
 	}
 
-	tags := strings.Split(page.Tags, "")
+	tags := strings.Split(page.Tags, ",")
 
 	for i := range(tags) {
 		tag := strings.Trim(tags[i], " ")
