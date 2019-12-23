@@ -36,7 +36,7 @@ func initDatabase() *gorm.DB {
 
 func initRouters (engine *gin.Engine){
 	router := engine.Group("/api")
-	store := persistence.NewInMemoryStore(time.Second)
+	store := persistence.NewInMemoryStore(5 * time.Second)
 	user.RegisterRouter(router, store)
 	page.RegisterRouter(router, store)
 	other.RegisterRouter(engine, store)
