@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-func AdminRequired(c *gin.Context){
+func AdminRequired(c *gin.Context) {
 	conf := config.Get()
 	key, err1 := c.Cookie(conf.CookieToken)
 	if err1 != nil {
 		common.AbortWithCode(c, http.StatusForbidden, common.CodePermissionDenied)
 		return
 	}
-	var _ , err2 = ValidateToken(key)
+	var _, err2 = ValidateToken(key)
 	if err2 != nil {
 		common.AbortWithCode(c, http.StatusForbidden, common.CodePermissionDenied)
 		return

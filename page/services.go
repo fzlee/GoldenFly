@@ -13,16 +13,16 @@ import (
 	"time"
 )
 
-func GenerateSideBar(c *gin.Context) *gin.H{
+func GenerateSideBar(c *gin.Context) *gin.H {
 	return &gin.H{
 		"announcement": generateSidebarAnnouncement(),
-		"links": generateSidebarLinks(c),
-		"comments": generateSidebarComments(c),
-		"tags": generateSidebarTags(),
+		"links":        generateSidebarLinks(c),
+		"comments":     generateSidebarComments(c),
+		"tags":         generateSidebarTags(),
 	}
 }
 
-func generateSidebarAnnouncement() *gin.H{
+func generateSidebarAnnouncement() *gin.H {
 	conf := config.Get()
 	page, err := GetPage(&Page{URL: conf.BlogAnnouncementURL})
 	if err != nil {
@@ -30,36 +30,36 @@ func generateSidebarAnnouncement() *gin.H{
 	}
 
 	return &gin.H{
-		"url": page.URL,
+		"url":     page.URL,
 		"content": page.ContentDigest,
 	}
 }
 
-func generateSidebarLinks(c *gin.Context) ([] *LinkResponse) {
+func generateSidebarLinks(c *gin.Context) []*LinkResponse {
 	conf := config.Get()
 	links, _ := GetLinks(&Link{Display: true}, &common.Pagination{Page: 1, Size: conf.BlogLinkCount})
-	results := make([] *LinkResponse, len(links));
-	for i := range(links) {
+	results := make([]*LinkResponse, len(links))
+	for i := range links {
 		results[i] = (&LinkSerializer{c, &links[i]}).getSidebarResponse()
 	}
 	return results
 }
 
-func generateSidebarComments(c *gin.Context) ([] *CommentResponse){
+func generateSidebarComments(c *gin.Context) []*CommentResponse {
 	conf := config.Get()
-	comments, _ := GetComments(&Comment{}, &common.Pagination{Page: 1, Size:conf.BlogCommentCount}, "id desc")
+	comments, _ := GetComments(&Comment{}, &common.Pagination{Page: 1, Size: conf.BlogCommentCount}, "id desc")
 	results := make([]*CommentResponse, len(comments))
-	for i:= range(results) {
+	for i := range results {
 		results[i] = (&CommentSerializer{c, &comments[i]}).SidebarCommentResponse()
 	}
 	return results
 }
 
-func generateSidebarTags ()[]string {
+func generateSidebarTags() []string {
 	return GetDistinctTags()
 }
 
-func TransactionDeletePage (page *Page) error {
+func TransactionDeletePage(page *Page) error {
 	var err error
 	// delete page, tags, comments
 	tx := common.DB.Begin()
@@ -95,8 +95,7 @@ func TransactionDeletePage (page *Page) error {
 	return tx.Commit().Error
 }
 
-
-func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
+func UpdateOrCreatePage(v *SavePageValidator) (*Page, error) {
 	var err error
 	var page *Page
 	if v.PageID != nil {
@@ -145,10 +144,10 @@ func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
 	}
 
 	// handle tags
-	if ! strings.HasPrefix(page.Tags, ",") {
+	if !strings.HasPrefix(page.Tags, ",") {
 		page.Tags = "," + page.Tags
 	}
-	if ! strings.HasSuffix(page.Tags, ",") {
+	if !strings.HasSuffix(page.Tags, ",") {
 		page.Tags = page.Tags + ","
 	}
 
@@ -159,8 +158,7 @@ func UpdateOrCreatePage(v *SavePageValidator) (*Page, error){
 	return page, TransactionUpdatePageTags(page)
 }
 
-
-func TransactionUpdatePageTags (page *Page) error {
+func TransactionUpdatePageTags(page *Page) error {
 	common.DB.Begin()
 	var err error
 	// delete tags and create new
@@ -183,7 +181,7 @@ func TransactionUpdatePageTags (page *Page) error {
 
 	tags := strings.Split(page.Tags, ",")
 
-	for i := range(tags) {
+	for i := range tags {
 		tag := strings.Trim(tags[i], " ")
 		if tag != "" {
 			err = tx.Create(&Tag{
@@ -201,8 +199,7 @@ func TransactionUpdatePageTags (page *Page) error {
 	return tx.Commit().Error
 }
 
-
-func CreateLink (v *CreateLinkValidator) error {
+func CreateLink(v *CreateLinkValidator) error {
 	link := &Link{
 		Name:        v.Name,
 		Href:        v.Href,
@@ -214,20 +211,18 @@ func CreateLink (v *CreateLinkValidator) error {
 	return common.DB.Create(link).Error
 }
 
-
-func UpdateLink (link *Link, v *UpdateLinkValidator) {
+func UpdateLink(link *Link, v *UpdateLinkValidator) {
 	link.Display = *v.Display
 	common.DB.Save(link)
 }
 
-
-func CreateMedia (header *multipart.FileHeader) (*Media, error){
+func CreateMedia(header *multipart.FileHeader) (*Media, error) {
 	media := &Media{
-		FileID: common.RandomString(20),
-		FileName: header.Filename,
-		Size: int(header.Size),
-		Display: true,
-		CreateTime: time.Now(),
+		FileID:      common.RandomString(20),
+		FileName:    header.Filename,
+		Size:        int(header.Size),
+		Display:     true,
+		CreateTime:  time.Now(),
 		ContentType: header.Header["Content-Type"][0],
 	}
 
@@ -243,8 +238,7 @@ func CreateMedia (header *multipart.FileHeader) (*Media, error){
 	return media, err
 }
 
-
-func SendEmail (to string, subject string, content string) {
+func SendEmail(to string, subject string, content string) {
 	conf := config.Get()
 	if !conf.SendEmailReply {
 		return

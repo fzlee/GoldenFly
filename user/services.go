@@ -16,30 +16,28 @@ import (
 	"time"
 )
 
-func WriteCredentialToCookie (c *gin.Context, user *User, token *AuthToken) {
+func WriteCredentialToCookie(c *gin.Context, user *User, token *AuthToken) {
 	conf := config.Get()
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:       conf.CookieToken,
-		Value:      token.Key,
-		Expires:    token.ExpiredAt,
-		Path:       "/",
+		Name:    conf.CookieToken,
+		Value:   token.Key,
+		Expires: token.ExpiredAt,
+		Path:    "/",
 	})
 
 	cookieUser := (&UserSerializer{c, *user}).LoginResponse()
 	cookieData, _ := json.Marshal(cookieUser)
 	cookieData2 := string(cookieData)
-	cookieData3 := strings.ReplaceAll(cookieData2, " ","%20")
+	cookieData3 := strings.ReplaceAll(cookieData2, " ", "%20")
 	cookieData4 := url.QueryEscape(cookieData3)
 
-
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:       conf.CookieUser,
-		Value:      cookieData4,
-		Expires:    token.ExpiredAt,
-		Path:       "/",
+		Name:    conf.CookieUser,
+		Value:   cookieData4,
+		Expires: token.ExpiredAt,
+		Path:    "/",
 	})
 }
-
 
 func ChangePasswordViaCommandLine() {
 	reader := bufio.NewReader(os.Stdin)
@@ -49,7 +47,7 @@ func ChangePasswordViaCommandLine() {
 	fmt.Print("Enter Password: ")
 	bPassword1, _ := terminal.ReadPassword(int(syscall.Stdin))
 	fmt.Print("Repeat Password: ")
-	bPassword2 , _ := terminal.ReadPassword(int(syscall.Stdin))
+	bPassword2, _ := terminal.ReadPassword(int(syscall.Stdin))
 
 	if string(bPassword1) != string(bPassword2) {
 		fmt.Println("Password confirmation failed")
@@ -68,8 +66,7 @@ func ChangePasswordViaCommandLine() {
 	fmt.Println("Done")
 }
 
-
-func CreateUserViaCommandLine () {
+func CreateUserViaCommandLine() {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Username: ")
 	Username, _ := reader.ReadString('\n')
@@ -78,7 +75,7 @@ func CreateUserViaCommandLine () {
 	fmt.Println("Enter Password: ")
 	bPassword1, _ := terminal.ReadPassword(int(syscall.Stdin))
 	fmt.Println("Repeat Password: ")
-	bPassword2 , _ := terminal.ReadPassword(int(syscall.Stdin))
+	bPassword2, _ := terminal.ReadPassword(int(syscall.Stdin))
 
 	if string(bPassword1) != string(bPassword2) {
 		fmt.Println("Password confirmation failed")
@@ -94,7 +91,7 @@ func CreateUserViaCommandLine () {
 	now := time.Now()
 	user = User{
 		LastLogin: now,
-		UID:   common.RandomString(12),
+		UID:       common.RandomString(12),
 		Username:  Username,
 		Activated: 1,
 		CreatedAt: now,

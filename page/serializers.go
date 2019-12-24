@@ -5,36 +5,37 @@ import (
 	"github.com/gin-gonic/gin"
 	"time"
 )
+
 type PageSerializer struct {
 	C *gin.Context
-	* Page
+	*Page
 }
 
 type PageResponse struct {
-    ID				int		 	`json:"id"`
-    URL				string			`json:"url"`
-    Title			string			`json:"title"`
-    ContentDigest 	string			`json:"content_digest,omitempty"`
-    Content			string			`json:"content,omitempty"`
-    Keywords 		string			`json:"keywords"`
-    Metacontent 	string   		`json:"metacontent,omitempty"`
-    CreateTime		* time.Time			`json:"create_time"`
-    UpdateTime		* time.Time			`json:"update_time"`
-    NeedKey			bool			`json:"need_key"`
-    Password		string			`json:"password,omitempty"`
-    Tags			string			`json:"tags"`
-    Editor			string			`json:"editor"`
-    AllowVisit		bool			`json:"allow_visit"`
-    AllowComment	bool			`json:"allow_comment"`
-    IsOriginal		bool			`json:"is_original"`
-    NumLookup		int				`json:"num_lookup"`
-    HTML 			string			`json:"html,omitempty"`
-    Preview			string			`json:"preview,omitempty"`
+	ID            int        `json:"id"`
+	URL           string     `json:"url"`
+	Title         string     `json:"title"`
+	ContentDigest string     `json:"content_digest,omitempty"`
+	Content       string     `json:"content,omitempty"`
+	Keywords      string     `json:"keywords"`
+	Metacontent   string     `json:"metacontent,omitempty"`
+	CreateTime    *time.Time `json:"create_time"`
+	UpdateTime    *time.Time `json:"update_time"`
+	NeedKey       bool       `json:"need_key"`
+	Password      string     `json:"password,omitempty"`
+	Tags          string     `json:"tags"`
+	Editor        string     `json:"editor"`
+	AllowVisit    bool       `json:"allow_visit"`
+	AllowComment  bool       `json:"allow_comment"`
+	IsOriginal    bool       `json:"is_original"`
+	NumLookup     int        `json:"num_lookup"`
+	HTML          string     `json:"html,omitempty"`
+	Preview       string     `json:"preview,omitempty"`
 }
 
-func (self * PageSerializer) FullResponse() *PageResponse {
+func (self *PageSerializer) FullResponse() *PageResponse {
 	return &PageResponse{
-		ID:			   self.ID,
+		ID:            self.ID,
 		URL:           self.URL,
 		Title:         self.Title,
 		ContentDigest: self.ContentDigest,
@@ -54,13 +55,13 @@ func (self * PageSerializer) FullResponse() *PageResponse {
 	}
 }
 
-func (self * PageSerializer) PreviewResponse() *PageResponse {
-	r :=  &PageResponse{
-		URL:           self.URL,
-		Title:         self.Title,
-		CreateTime:    self.CreateTime,
-		NeedKey:       self.NeedKey,
-		Tags:          self.Tags,
+func (self *PageSerializer) PreviewResponse() *PageResponse {
+	r := &PageResponse{
+		URL:        self.URL,
+		Title:      self.Title,
+		CreateTime: self.CreateTime,
+		NeedKey:    self.NeedKey,
+		Tags:       self.Tags,
 	}
 
 	if !self.NeedKey {
@@ -71,18 +72,18 @@ func (self * PageSerializer) PreviewResponse() *PageResponse {
 	return r
 }
 
-func (self * PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
-	r :=  &PageResponse{
-		URL:           self.URL,
-		Title:         self.Title,
-		Tags:          self.Tags,
-		CreateTime:    self.CreateTime,
-		NeedKey:       self.NeedKey,
-		AllowComment:  self.AllowComment,
-		IsOriginal:	   self.IsOriginal,
+func (self *PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
+	r := &PageResponse{
+		URL:          self.URL,
+		Title:        self.Title,
+		Tags:         self.Tags,
+		CreateTime:   self.CreateTime,
+		NeedKey:      self.NeedKey,
+		AllowComment: self.AllowComment,
+		IsOriginal:   self.IsOriginal,
 	}
 
-	if self.NeedKey && !enforceContent{
+	if self.NeedKey && !enforceContent {
 		r.Content = ""
 	} else {
 		r.Content = self.Content
@@ -91,65 +92,63 @@ func (self * PageSerializer) MetaResponse(enforceContent bool) *PageResponse {
 	return r
 }
 
-func (self * PageSerializer) SiteMapResponse(c *gin.Context) *PageResponse {
+func (self *PageSerializer) SiteMapResponse(c *gin.Context) *PageResponse {
 	uri := location.Get(c)
 	prefix := uri.Scheme + "://" + uri.Host
 	r := &PageResponse{
-		URL: prefix + "/articles/" + self.URL,
+		URL:        prefix + "/articles/" + self.URL,
 		CreateTime: self.CreateTime,
 	}
 	return r
 }
 
-
-func (self * PageSerializer) RSSResponse(c *gin.Context) *PageResponse {
+func (self *PageSerializer) RSSResponse(c *gin.Context) *PageResponse {
 	uri := location.Get(c)
 	prefix := uri.Scheme + "://" + uri.Host
 	r := &PageResponse{
-		URL: prefix + "/articles/" + self.URL,
+		URL:        prefix + "/articles/" + self.URL,
 		CreateTime: self.CreateTime,
-		HTML: self.HTML,
-		Title: self.Title,
+		HTML:       self.HTML,
+		Title:      self.Title,
 	}
 	return r
 }
 
 type CommentSerializer struct {
 	c *gin.Context
-	* Comment
+	*Comment
 }
 
 type CommentResponse struct {
-	ID              int         `json:"id"`
-	Email           string      `json:"email,omitempty"`
-	Nickname        string      `json:"nickname"`
-	Content         string      `json:"content"`
-	To              * string       `json:"to"`
-	CreateTime      time.Time   `json:"create_time"`
-	IP              string      `json:"ip,omitempty"`
-	Website         string      `json:"website,omitempty"`
-	PageID          int         `json:"page_id"`
-	ParentCommentID * int    `json:"parent_comment_id"`
+	ID              int       `json:"id"`
+	Email           string    `json:"email,omitempty"`
+	Nickname        string    `json:"nickname"`
+	Content         string    `json:"content"`
+	To              *string   `json:"to"`
+	CreateTime      time.Time `json:"create_time"`
+	IP              string    `json:"ip,omitempty"`
+	Website         string    `json:"website,omitempty"`
+	PageID          int       `json:"page_id"`
+	ParentCommentID *int      `json:"parent_comment_id"`
 
 	Page struct {
-		Title 		*string		`json:"title"`
-		URL         *string		`json:"url"`
-	}  `json:"page,omitempty"`
+		Title *string `json:"title"`
+		URL   *string `json:"url"`
+	} `json:"page,omitempty"`
 
 	ParentComment struct {
-		Nickname * string
-		ID       * int
-	}`json:"parent_comment,omitempty"`
+		Nickname *string
+		ID       *int
+	} `json:"parent_comment,omitempty"`
 }
 
-
-func (self * CommentSerializer) CommentResponse (IsAdmin bool) *CommentResponse {
+func (self *CommentSerializer) CommentResponse(IsAdmin bool) *CommentResponse {
 	r := &CommentResponse{
-		ID:					self.ID,
-		Nickname:			self.Nickname,
-		Content:			self.Content,
-		To:					self.To,
-		CreateTime:			self.CreateTime,
+		ID:         self.ID,
+		Nickname:   self.Nickname,
+		Content:    self.Content,
+		To:         self.To,
+		CreateTime: self.CreateTime,
 	}
 
 	if self.ParentCommentID != nil {
@@ -175,14 +174,13 @@ func (self * CommentSerializer) CommentResponse (IsAdmin bool) *CommentResponse 
 	return r
 }
 
-
-func (self * CommentSerializer) SidebarCommentResponse () *CommentResponse {
+func (self *CommentSerializer) SidebarCommentResponse() *CommentResponse {
 
 	r := &CommentResponse{
-		Nickname:        self.Nickname,
-		Content:         self.Content,
-		To:              self.To,
-		CreateTime:		 self.CreateTime,
+		Nickname:   self.Nickname,
+		Content:    self.Content,
+		To:         self.To,
+		CreateTime: self.CreateTime,
 	}
 
 	page, err := GetPage(&Page{ID: self.PageID})
@@ -195,7 +193,7 @@ func (self * CommentSerializer) SidebarCommentResponse () *CommentResponse {
 
 type LinkSerializer struct {
 	c *gin.Context
-	* Link
+	*Link
 }
 
 type LinkResponse struct {
@@ -207,44 +205,42 @@ type LinkResponse struct {
 	Display     bool      `json:"display,omitempty"`
 }
 
-func (self *LinkSerializer) getSidebarResponse () *LinkResponse {
+func (self *LinkSerializer) getSidebarResponse() *LinkResponse {
 	return &LinkResponse{
-		Name: self.Name,
-		Href: self.Href,
+		Name:        self.Name,
+		Href:        self.Href,
 		Description: self.Description,
 	}
 }
 
-
-func (self *LinkSerializer) FullResponse () *LinkResponse {
+func (self *LinkSerializer) FullResponse() *LinkResponse {
 	return &LinkResponse{
-		ID: self.ID,
-		Name: self.Name,
-		Href: self.Href,
+		ID:          self.ID,
+		Name:        self.Name,
+		Href:        self.Href,
 		Description: self.Description,
-		CreateTime: self.CreateTime,
-		Display: self.Display,
+		CreateTime:  self.CreateTime,
+		Display:     self.Display,
 	}
 }
 
 type MediaSerializer struct {
 	c *gin.Context
-	* Media
+	*Media
 }
 
 type MediaResponse struct {
-	ID 			int			`json:"id"`
-	FileID		string			`json:"fileid"`
-	FileName	string			`json:"filename"`
-	Version		int				`json:"version"`
-	ContentType	string			`json:"content_type"`
-	Size		int				`json:"size"`
-	CreateTime	time.Time		`json:"create_time"`
-	Display		bool			`json:"display"`
+	ID          int       `json:"id"`
+	FileID      string    `json:"fileid"`
+	FileName    string    `json:"filename"`
+	Version     int       `json:"version"`
+	ContentType string    `json:"content_type"`
+	Size        int       `json:"size"`
+	CreateTime  time.Time `json:"create_time"`
+	Display     bool      `json:"display"`
 }
 
-
-func (self *MediaSerializer) FullResponse () *MediaResponse{
+func (self *MediaSerializer) FullResponse() *MediaResponse {
 	return &MediaResponse{
 		ID:          self.ID,
 		FileID:      self.FileID,

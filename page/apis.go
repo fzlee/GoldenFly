@@ -14,14 +14,13 @@ func ListPagesView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	pages, _ := GetPages(&Page{}, &pagination)
 
-	results := make([] *PageResponse, len(pages))
+	results := make([]*PageResponse, len(pages))
 	for i := range pages {
 		results[i] = (&PageSerializer{c, &pages[i]}).FullResponse()
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
-
 
 func DeletePageView(c *gin.Context) {
 	var err error
@@ -40,9 +39,8 @@ func DeletePageView(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-
 func RetrievePageMetaView(c *gin.Context) {
-	url :=  c.Param("url")
+	url := c.Param("url")
 	page, err := GetPage(&Page{URL: url})
 	if err != nil {
 		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
@@ -55,7 +53,7 @@ func RetrievePageMetaView(c *gin.Context) {
 func GetPageByPasswordView(c *gin.Context) {
 	var page Page
 	var err error
-	url :=  c.Param("url")
+	url := c.Param("url")
 	page, err = GetPage(&Page{URL: url})
 	if err != nil {
 		common.AbortWithCode(c, http.StatusNotFound, common.CodeNotFound)
@@ -95,7 +93,7 @@ func PagesInPlaceView(c *gin.Context) {
 	}
 
 	count := 1
-	query := common.DB.Model(&Page{}).Where(&Page{URL:v.URL})
+	query := common.DB.Model(&Page{}).Where(&Page{URL: v.URL})
 	if v.ID != nil {
 		query = query.Not("id", v.ID).Count(&count)
 	}
@@ -105,12 +103,11 @@ func PagesInPlaceView(c *gin.Context) {
 	}})
 }
 
-
-func PagesPreview(c * gin.Context) {
+func PagesPreview(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
-	pages, _ := GetPages(&Page{AllowVisit:true}, &pagination)
+	pages, _ := GetPages(&Page{AllowVisit: true}, &pagination)
 
-	results := make([] *PageResponse, len(pages))
+	results := make([]*PageResponse, len(pages))
 	for i := range pages {
 		results[i] = (&PageSerializer{c, &pages[i]}).PreviewResponse()
 	}
@@ -118,10 +115,9 @@ func PagesPreview(c * gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
 
-
 func PageCommentsView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
-	url:= c.Param("url")
+	url := c.Param("url")
 	page, err := GetPage(&Page{URL: url})
 
 	if err != nil {
@@ -129,14 +125,13 @@ func PageCommentsView(c *gin.Context) {
 	}
 	comments, _ := GetComments(&Comment{PageID: page.ID}, &pagination, "id")
 
-	results := make([] *CommentResponse, len(comments))
+	results := make([]*CommentResponse, len(comments))
 	for i := range comments {
 		results[i] = (&CommentSerializer{c, &comments[i]}).CommentResponse(false)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
-
 
 func SavePageView(c *gin.Context) {
 
@@ -146,7 +141,7 @@ func SavePageView(c *gin.Context) {
 		common.ResponseWithValidation(c, err)
 		return
 	}
-	var page * Page
+	var page *Page
 	if page, err = UpdateOrCreatePage(&v); err != nil {
 		common.ResponseWithValidation(c, err)
 		return
@@ -156,7 +151,7 @@ func SavePageView(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"data": s.FullResponse(),
+		"data":    s.FullResponse(),
 	})
 
 }
@@ -166,19 +161,18 @@ func PageSideBarView(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": result, "success": true})
 }
 
-
 func PagesSearchView(c *gin.Context) {
 	tagname := c.DefaultQuery("tagname", "")
 	if tagname == "" {
-		c.JSON(http.StatusOK, gin.H{"success": true, "data": make([] string, 0)})
+		c.JSON(http.StatusOK, gin.H{"success": true, "data": make([]string, 0)})
 		return
 	}
 
 	pagination := common.ParsePageAndSize(c)
-	pages, _:= SearchPages(tagname, &pagination)
+	pages, _ := SearchPages(tagname, &pagination)
 
-	results := make([] *PageResponse, len(pages))
-	for i := range(pages) {
+	results := make([]*PageResponse, len(pages))
+	for i := range pages {
 		results[i] = (&PageSerializer{c, &pages[i]}).PreviewResponse()
 	}
 
@@ -186,10 +180,9 @@ func PagesSearchView(c *gin.Context) {
 
 }
 
-
 func CreateCommentView(c *gin.Context) {
 	var err error
-	url :=  c.Param("url")
+	url := c.Param("url")
 
 	page, err := GetPage(&Page{URL: url})
 	if err != nil {
@@ -235,19 +228,17 @@ func CreateCommentView(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-
 func ListCommentsView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
 	comments, _ := GetComments(&Comment{}, &pagination, "id desc")
 
-	results := make([] *CommentResponse, len(comments))
+	results := make([]*CommentResponse, len(comments))
 	for i := range comments {
 		results[i] = (&CommentSerializer{c, &comments[i]}).CommentResponse(true)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
 }
-
 
 func DeleteCommentView(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -257,18 +248,16 @@ func DeleteCommentView(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-
 func ListLinksView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
-	links , _ := GetLinks(&Link{}, &pagination)
+	links, _ := GetLinks(&Link{}, &pagination)
 
-	results := make([] *LinkResponse, len(links))
-	for i := range links{
+	results := make([]*LinkResponse, len(links))
+	for i := range links {
 		results[i] = (&LinkSerializer{c, &links[i]}).FullResponse()
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": results})
 }
-
 
 func CreateLinkView(c *gin.Context) {
 	var v CreateLinkValidator
@@ -286,7 +275,7 @@ func CreateLinkView(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-func DeleteLinkView (c *gin.Context) {
+func DeleteLinkView(c *gin.Context) {
 	var err error
 	var id int
 	id, err = strconv.Atoi(c.Param("id"))
@@ -311,8 +300,7 @@ func DeleteLinkView (c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-
-func UpdateLinkView (c *gin.Context) {
+func UpdateLinkView(c *gin.Context) {
 	var err error
 	var id int
 	id, err = strconv.Atoi(c.Param("id"))
@@ -329,7 +317,7 @@ func UpdateLinkView (c *gin.Context) {
 	}
 
 	var v UpdateLinkValidator
-	if err = c.BindJSON(&v); err !=nil {
+	if err = c.BindJSON(&v); err != nil {
 		common.ResponseWithPanic(c, err)
 	}
 
@@ -338,20 +326,18 @@ func UpdateLinkView (c *gin.Context) {
 
 }
 
-
 func ListMediasView(c *gin.Context) {
 	pagination := common.ParsePageAndSize(c)
-	medias , _ := GetMedias(&Media{}, &pagination)
+	medias, _ := GetMedias(&Media{}, &pagination)
 
-	results := make([] *MediaResponse, len(medias))
-	for i := range medias{
+	results := make([]*MediaResponse, len(medias))
+	for i := range medias {
 		results[i] = (&MediaSerializer{c, &medias[i]}).FullResponse()
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": results})
 }
 
-
-func DeleteMediaView (c *gin.Context) {
+func DeleteMediaView(c *gin.Context) {
 	var id int
 	var err error
 	id, err = strconv.Atoi(c.Param("id"))
@@ -372,8 +358,7 @@ func DeleteMediaView (c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-
-func UploadMediaView (c *gin.Context) {
+func UploadMediaView(c *gin.Context) {
 	form, _ := c.MultipartForm()
 	files := form.File["file"]
 	file := files[0]
@@ -386,6 +371,3 @@ func UploadMediaView (c *gin.Context) {
 
 	common.ResponseWithCode(c, common.CodeFileUploadFailed)
 }
-
-
-

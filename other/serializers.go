@@ -8,9 +8,7 @@ import (
 	"time"
 )
 
-
-
-func GenerateRSS(pages *[] page.Page) (string, error){
+func GenerateRSS(pages *[]page.Page) (string, error) {
 	conf := config.Get()
 
 	now := time.Now()
@@ -24,7 +22,7 @@ func GenerateRSS(pages *[] page.Page) (string, error){
 
 	feed.Items = make([]*feeds.Item, len(*pages))
 
-	for i:= range *pages {
+	for i := range *pages {
 		page := (*pages)[i]
 		url := conf.SiteURL + "/articles/" + page.URL
 		feed.Items[i] = &feeds.Item{
@@ -46,8 +44,7 @@ func GenerateRSS(pages *[] page.Page) (string, error){
 	return feed.ToRss()
 }
 
-
-func GenerateSitemap(pages *[]page.Page) *stm.Sitemap{
+func GenerateSitemap(pages *[]page.Page) *stm.Sitemap {
 	conf := config.Get()
 
 	sm := stm.NewSitemap(1)
@@ -55,8 +52,7 @@ func GenerateSitemap(pages *[]page.Page) *stm.Sitemap{
 	sm.Create()
 	sm.Add(stm.URL{{"loc", "/"}, {"changefreq", "daily"}})
 
-
-	for i:= range *pages {
+	for i := range *pages {
 		page := (*pages)[i]
 		sm.Add(stm.URL{
 			{"loc", "/articles/" + page.URL},

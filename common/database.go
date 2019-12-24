@@ -1,13 +1,12 @@
 package common
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 	"golden_fly/config"
 )
 
-
-var  DB *gorm.DB
+var DB *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
 	conf := config.Get()

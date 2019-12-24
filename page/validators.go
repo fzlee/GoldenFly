@@ -1,46 +1,43 @@
 package page
 
 type CommentValidator struct {
-	Content    string     	`json:"content" binding:"required"`
-	Email	   string		`json:"email" binding:"required,email"`
-	Nickname   string       `json:"nickname" binding:"required"`
-	Website	   string       `json:"website" binding:"omitempty,url"`
-	CommentID  * int          `json:"comment_id" binding:"omitempty,numeric"`
+	Content   string `json:"content" binding:"required"`
+	Email     string `json:"email" binding:"required,email"`
+	Nickname  string `json:"nickname" binding:"required"`
+	Website   string `json:"website" binding:"omitempty,url"`
+	CommentID *int   `json:"comment_id" binding:"omitempty,numeric"`
 }
-
 
 type InPlaceValidator struct {
 	URL string `json:"url" binding:"required"`
-	ID *int `json:"article_id" binding:""`
+	ID  *int   `json:"article_id" binding:""`
 }
-
 
 type PagePasswordValidator struct {
 	Password string `json:"password", binding:"required"`
 }
 
 type SavePageValidator struct {
-	PageID        *int      `json:"id" binding:"omitempty"`
-	AllowComment  *bool      `json:"allow_comment" binding:"required"`
-	AllowVisit    *bool      `json:"allow_visit" binding:"required"`
-	IsOriginal    *bool      `json:"is_original" binding:"required"`
-	NeedKey       *bool      `json:"need_key" binding:"required"`
-	Content       string    `json:"content" binding:"min=1"`
-	Editor        string    `json:"editor" binding:"oneof=markdown html"`
-	MetaContent   string    `json:"metacontent" binding:"min=0"`
-	Password      string    `json:"password" binding:"min=0"`
-	Tags          string    `json:"tags" binding:"min=0"`
-	Title         string    `json:"title" binding:"min=1"`
-	URL           string    `json:"url" binding:"min=1"`
+	PageID       *int   `json:"id" binding:"omitempty"`
+	AllowComment *bool  `json:"allow_comment" binding:"required"`
+	AllowVisit   *bool  `json:"allow_visit" binding:"required"`
+	IsOriginal   *bool  `json:"is_original" binding:"required"`
+	NeedKey      *bool  `json:"need_key" binding:"required"`
+	Content      string `json:"content" binding:"min=1"`
+	Editor       string `json:"editor" binding:"oneof=markdown html"`
+	MetaContent  string `json:"metacontent" binding:"min=0"`
+	Password     string `json:"password" binding:"min=0"`
+	Tags         string `json:"tags" binding:"min=0"`
+	Title        string `json:"title" binding:"min=1"`
+	URL          string `json:"url" binding:"min=1"`
 }
 
-
 type CreateLinkValidator struct {
-	Description 	string 		`json:"description" binding:"required,min=1"`
-	Href            string 		`json:"href" binding:"required,url"`
-	Name            string 		`json:"name" binding:"required,min=1"`
+	Description string `json:"description" binding:"required,min=1"`
+	Href        string `json:"href" binding:"required,url"`
+	Name        string `json:"name" binding:"required,min=1"`
 }
 
 type UpdateLinkValidator struct {
-	Display			*bool		`json:"display" binding:"required"`
+	Display *bool `json:"display" binding:"required"`
 }

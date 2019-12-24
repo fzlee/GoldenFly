@@ -17,7 +17,7 @@ var (
 )
 
 type User struct {
-	ID        uint       `gorm:"column:id;primary_key" json:"id"`
+	ID        uint      `gorm:"column:id;primary_key" json:"id"`
 	Password  string    `gorm:"column:password" json:"password"`
 	LastLogin time.Time `gorm:"column:last_login" json:"last_login"`
 	UID       string    `gorm:"column:uid" json:"uid"`
@@ -36,7 +36,7 @@ func (u *User) TableName() string {
 	return "user"
 }
 
-func GetUser (condition interface{}) (User, error) {
+func GetUser(condition interface{}) (User, error) {
 	var user User
 	err := common.DB.Where(condition).First(&user).Error
 	return user, err
@@ -67,15 +67,14 @@ func (self *User) HashPassword(password string) string {
 	}
 }
 
-
-func (self *User) SetPassword (password string) error {
+func (self *User) SetPassword(password string) error {
 	self.Password = self.HashPassword(password)
 	return common.DB.Save(self).Error
 }
 
-func (self *User) GetOrExtendToken () AuthToken {
+func (self *User) GetOrExtendToken() AuthToken {
 	token, err := GetToken(&AuthToken{UID: self.UID})
-	if err != nil  {
+	if err != nil {
 		return *createTokenFor(self.UID)
 	} else if token.IsGoingToExpired() {
 		token.extendToken()
@@ -118,7 +117,7 @@ func createTokenFor(uid string) *AuthToken {
 	return token
 }
 
-func (self *AuthToken) extendToken(){
+func (self *AuthToken) extendToken() {
 	now := time.Now()
 	conf := config.Get()
 	common.DB.Delete(&self)
@@ -127,7 +126,7 @@ func (self *AuthToken) extendToken(){
 	common.DB.Save(&self)
 }
 
-func (self *AuthToken) HasExpired () bool {
+func (self *AuthToken) HasExpired() bool {
 	now := time.Now()
 	return self.ExpiredAt.Before(now)
 }
@@ -139,10 +138,9 @@ func (self *AuthToken) IsGoingToExpired() bool {
 	return self.ExpiredAt.Before(then)
 }
 
-
-func ValidateToken(key string) (User, error){
+func ValidateToken(key string) (User, error) {
 	token, err := GetToken(&AuthToken{Key: key})
-	if err == nil && !token.HasExpired(){
+	if err == nil && !token.HasExpired() {
 		var user, err = GetUser(&User{UID: token.UID})
 		return user, err
 	}

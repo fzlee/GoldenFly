@@ -17,7 +17,6 @@ import (
 	"time"
 )
 
-
 func initConfig() {
 	if err := config.Load("config/config.yaml"); err != nil {
 		fmt.Println("Failed to load configuration")
@@ -34,7 +33,7 @@ func initDatabase() *gorm.DB {
 	return db
 }
 
-func initRouters (engine *gin.Engine){
+func initRouters(engine *gin.Engine) {
 	router := engine.Group("/api")
 	store := persistence.NewInMemoryStore(5 * time.Second)
 	user.RegisterRouter(router, store)
@@ -42,15 +41,14 @@ func initRouters (engine *gin.Engine){
 	other.RegisterRouter(engine, store)
 }
 
-func initTemplates (engine *gin.Engine) {
+func initTemplates(engine *gin.Engine) {
 	engine.LoadHTMLGlob("templates/*")
 }
 
-func initSession (engine *gin.Engine) {
+func initSession(engine *gin.Engine) {
 	store := cookie.NewStore([]byte(config.SessionName))
 	engine.Use(sessions.Sessions(config.SessionUserKey, store))
 }
-
 
 func main() {
 	initConfig()

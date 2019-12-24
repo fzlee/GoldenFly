@@ -20,12 +20,12 @@ type UserResponse struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-func (self *UserSerializer) Response () *UserResponse {
+func (self *UserSerializer) Response() *UserResponse {
 	return &UserResponse{
-		UID: self.UID,
-		Username: self.Username,
-		Nickname: self.Nickname,
-		Role: self.Role,
+		UID:       self.UID,
+		Username:  self.Username,
+		Nickname:  self.Nickname,
+		Role:      self.Role,
 		CreatedAt: self.CreatedAt,
 		UpdatedAt: self.UpdatedAt,
 	}
@@ -33,9 +33,8 @@ func (self *UserSerializer) Response () *UserResponse {
 
 func (self *UserSerializer) LoginResponse() *UserResponse {
 	return &UserResponse{
-		UID:       self.UID,
-		Nickname:  self.Nickname,
-		Role:      self.Role,
+		UID:      self.UID,
+		Nickname: self.Nickname,
+		Role:     self.Role,
 	}
 }
-

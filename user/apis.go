@@ -7,11 +7,11 @@ import (
 )
 
 func UsersListView(c *gin.Context) {
-	users, _:= GetUsers(&User{})
+	users, _ := GetUsers(&User{})
 
-	results := make([] *UserResponse, len(users))
+	results := make([]*UserResponse, len(users))
 
-	for i := range results{
+	for i := range results {
 		results[i] = (&UserSerializer{c, users[i]}).Response()
 	}
 	c.JSON(http.StatusOK, gin.H{"data": results, "success": true})
@@ -22,7 +22,6 @@ func UsersMeView(c *gin.Context) {
 	serializer := UserSerializer{c, user}
 	c.JSON(http.StatusOK, gin.H{"data": serializer.Response(), "success": true})
 }
-
 
 func LoginView(c *gin.Context) {
 
