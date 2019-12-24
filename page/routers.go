@@ -18,7 +18,7 @@ func RegisterRouter(router *gin.RouterGroup, store *persistence.InMemoryStore) {
 	router.POST("/articles/:url/comments/", CreateCommentView)
 
 	// cache
-	router.GET("/articles-sidebar/", cache.CachePage(store, time.Minute * 5, PageSideBarView))
+	router.GET("/articles-sidebar/", cache.CachePage(store, time.Second * 10, PageSideBarView))
 
 	adminGroup := router.Group("/")
 	adminGroup.Use(user.AdminRequired)

@@ -11,6 +11,7 @@ type CommentValidator struct {
 
 type InPlaceValidator struct {
 	URL string `json:"url" binding:"required"`
+	ID *int `json:"article_id" binding:""`
 }
 
 
