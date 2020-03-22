@@ -96,6 +96,8 @@ func PagesInPlaceView(c *gin.Context) {
 	query := common.DB.Model(&Page{}).Where(&Page{URL: v.URL})
 	if v.ID != nil {
 		query = query.Not("id", v.ID).Count(&count)
+	} else {
+		query = query.Count(&count)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": gin.H{
